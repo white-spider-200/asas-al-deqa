@@ -1,0 +1,1778 @@
+
+/* ADBS Safe Unified CSS */
+
+:root {
+  --adbs-blue: #005F93;
+  --adbs-blue-dark: #004B75;
+  --adbs-navy: #12212E;
+  --adbs-muted: #6B7280;
+  --adbs-bg: #F3F6F8;
+  --adbs-border: #DCE3E8;
+}
+
+/* Base */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--adbs-bg);
+  color: var(--adbs-navy);
+}
+
+/* Navbar */
+nav {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-bottom: 1px solid rgba(220, 227, 232, 0.85);
+  box-shadow: 0 8px 24px rgba(18, 33, 46, 0.04);
+}
+
+nav a:hover {
+  color: var(--adbs-blue) !important;
+}
+
+nav a:focus,
+nav button:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Logo */
+img[alt="ADBS Logo"] {
+  height: 72px !important;
+  max-height: 72px !important;
+  width: auto !important;
+  object-fit: contain !important;
+}
+
+/* Typography */
+h1,
+h2,
+h3 {
+  color: var(--adbs-navy);
+}
+
+p {
+  color: var(--adbs-muted);
+  line-height: 1.8;
+}
+
+/* Inputs */
+input,
+textarea,
+select {
+  background: #F3F6F8 !important;
+  border: 1px solid var(--adbs-border) !important;
+  border-radius: 14px !important;
+  color: var(--adbs-navy) !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none !important;
+  border-color: var(--adbs-blue) !important;
+  box-shadow: 0 0 0 4px rgba(0, 95, 147, 0.12) !important;
+}
+
+/* Submit buttons */
+button[type="submit"] {
+  background: var(--adbs-blue) !important;
+  color: white !important;
+  border-radius: 14px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 14px 30px rgba(0, 95, 147, 0.22);
+}
+
+button[type="submit"]:hover {
+  background: var(--adbs-blue-dark) !important;
+  transform: translateY(-2px);
+}
+
+/* Footer */
+footer {
+  background: #0F2433 !important;
+  color: white !important;
+}
+
+footer * {
+  background-color: transparent !important;
+  text-decoration: none !important;
+  border-bottom: none !important;
+}
+
+footer h1,
+footer h2,
+footer h3,
+footer h4 {
+  color: white !important;
+}
+
+footer p,
+footer span,
+footer li,
+footer a {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
+footer a:hover {
+  color: white !important;
+}
+
+/* Soft Animation */
+@keyframes adbsSoftFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+main section {
+  animation: adbsSoftFadeUp 0.55s ease both;
+}
+
+main section:nth-of-type(1) {
+  animation-delay: 0.03s;
+}
+
+main section:nth-of-type(2) {
+  animation-delay: 0.08s;
+}
+
+main section:nth-of-type(3) {
+  animation-delay: 0.13s;
+}
+
+main section:nth-of-type(4) {
+  animation-delay: 0.18s;
+}
+
+/* Cards hover */
+main [class*="rounded-2xl"],
+main [class*="rounded-3xl"],
+main [class*="rounded-[18px]"],
+main [class*="rounded-[24px]"] {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+main [class*="rounded-2xl"]:hover,
+main [class*="rounded-3xl"]:hover,
+main [class*="rounded-[18px]"]:hover,
+main [class*="rounded-[24px]"]:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 42px rgba(0, 95, 147, 0.12);
+}
+
+/* Images */
+main img {
+  transition: transform 0.45s ease;
+}
+
+main img:hover {
+  transform: scale(1.008);
+}
+
+/* Buttons and links */
+button,
+a {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+}
+
+button:hover,
+a:hover {
+  transform: translateY(-1px);
+}
+
+/* Do not animate navbar */
+nav,
+nav * {
+  animation: none !important;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  img[alt="ADBS Logo"] {
+    height: 50px !important;
+    max-height: 50px !important;
+    width: auto !important;
+  }
+
+  h1 {
+    font-size: clamp(38px, 10vw, 56px) !important;
+    line-height: 1.2 !important;
+  }
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* Bigger ADBS Logo in Navbar */
+header img[alt="ADBS Logo"],
+nav img[alt="ADBS Logo"],
+img[alt="ADBS Logo"] {
+  width: 170px !important;
+  max-width: 170px !important;
+  height: auto !important;
+  object-fit: contain !important;
+}
+
+@media (min-width: 1024px) {
+  header img[alt="ADBS Logo"],
+  nav img[alt="ADBS Logo"],
+  img[alt="ADBS Logo"] {
+    width: 210px !important;
+    max-width: 210px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  header img[alt="ADBS Logo"],
+  nav img[alt="ADBS Logo"],
+  img[alt="ADBS Logo"] {
+    width: 130px !important;
+    max-width: 130px !important;
+  }
+}
+
+/* Final navbar logo size */
+header img[alt="ADBS Logo"],
+nav img[alt="ADBS Logo"] {
+  width: 155px !important;
+  max-width: 155px !important;
+  height: auto !important;
+  max-height: 75px !important;
+  object-fit: contain !important;
+  transform: none !important;
+  background: transparent !important;
+}
+
+@media (min-width: 1024px) {
+  header img[alt="ADBS Logo"],
+  nav img[alt="ADBS Logo"] {
+    width: 175px !important;
+    max-width: 175px !important;
+    max-height: 85px !important;
+  }
+}
+
+/* Reduce navbar logo size - final */
+header img[alt="ADBS Logo"],
+nav img[alt="ADBS Logo"] {
+  width: 100px !important;
+  max-width: 100px !important;
+  max-height: 38px !important;
+  height: auto !important;
+  object-fit: contain !important;
+  transform: none !important;
+}
+
+@media (min-width: 1024px) {
+  header img[alt="ADBS Logo"],
+  nav img[alt="ADBS Logo"] {
+    width: 130px !important;
+    max-width: 130px !important;
+    max-height: 38px !important;
+  }
+}
+
+/* Smaller final ADBS logo */
+header img[alt="ADBS Logo"],
+nav img[alt="ADBS Logo"] {
+  width: 85px !important;
+  max-width: 85px !important;
+  max-height: 38px !important;
+  height: auto !important;
+  object-fit: contain !important;
+  transform: none !important;
+}
+
+@media (min-width: 1024px) {
+  header img[alt="ADBS Logo"],
+  nav img[alt="ADBS Logo"] {
+    width: 100px !important;
+    max-width: 100px !important;
+    max-height: 38px !important;
+  }
+}
+
+/* ONLY shrink ADBS logo - do not change navbar height */
+header img[alt="ADBS Logo"],
+nav img[alt="ADBS Logo"] {
+  width: 85px !important;
+  max-width: 85px !important;
+  height: auto !important;
+  max-height: 38px !important;
+  object-fit: contain !important;
+  transform: none !important;
+}
+
+/* Make white navbar strip a little taller only */
+header,
+nav {
+  min-height: 82px !important;
+}
+
+/* Keep logo size unchanged */
+header img[alt="ADBS Logo"],
+nav img[alt="ADBS Logo"] {
+  width: 85px !important;
+  max-width: 85px !important;
+  max-height: 38px !important;
+  height: auto !important;
+  object-fit: contain !important;
+}
+
+
+/* =========================================================
+   ADBS Clean Bento Premium Layout
+   Same colors - modern structure
+   ========================================================= */
+
+.adbs-home-modern {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(0, 95, 147, 0.08), transparent 28%),
+    linear-gradient(180deg, #ffffff 0%, var(--adbs-bg) 48%, #ffffff 100%);
+  overflow: hidden;
+}
+
+.adbs-section {
+  position: relative;
+  padding: 96px 24px;
+}
+
+.adbs-container {
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.adbs-section-head {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 42px;
+  align-items: end;
+  margin-bottom: 42px;
+}
+
+.adbs-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  border: 1px solid var(--adbs-border);
+  background: rgba(255,255,255,0.82);
+  color: var(--adbs-blue);
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  box-shadow: 0 10px 30px rgba(18,33,46,0.05);
+}
+
+.adbs-title {
+  margin-top: 22px;
+  color: var(--adbs-navy);
+  font-size: clamp(42px, 5.4vw, 86px);
+  line-height: 0.98;
+  letter-spacing: -0.06em;
+  font-weight: 950;
+}
+
+.adbs-title .accent {
+  color: var(--adbs-blue);
+  font-style: italic;
+  font-weight: 700;
+}
+
+.adbs-lead {
+  color: var(--adbs-muted);
+  font-size: clamp(16px, 1.4vw, 21px);
+  line-height: 1.9;
+  max-width: 690px;
+}
+
+.adbs-bento {
+  display: grid;
+  grid-template-columns: 1.02fr 1.25fr;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.adbs-feature-card {
+  position: relative;
+  min-height: 520px;
+  border-radius: 38px;
+  overflow: hidden;
+  background: var(--adbs-navy);
+  box-shadow: 0 30px 90px rgba(18,33,46,0.18);
+}
+
+.adbs-feature-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.42;
+  transform: none !important;
+}
+
+.adbs-feature-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(18,33,46,0.10), rgba(18,33,46,0.90)),
+    radial-gradient(circle at 80% 20%, rgba(0,95,147,0.42), transparent 34%);
+}
+
+.adbs-feature-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  padding: 38px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #fff;
+}
+
+.adbs-feature-icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 24px;
+  display: grid;
+  place-items: center;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(14px);
+}
+
+.adbs-feature-content h3 {
+  color: #fff !important;
+  font-size: clamp(32px, 3.4vw, 54px);
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+  font-weight: 950;
+  max-width: 540px;
+}
+
+.adbs-feature-content p {
+  color: rgba(255,255,255,0.72) !important;
+  margin-top: 16px;
+  max-width: 520px;
+}
+
+.adbs-feature-actions {
+  margin-top: 26px;
+}
+
+.adbs-primary-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--adbs-blue);
+  color: #fff !important;
+  border-radius: 999px;
+  padding: 15px 24px;
+  font-weight: 900;
+  text-decoration: none;
+  box-shadow: 0 18px 45px rgba(0,95,147,0.26);
+}
+
+.adbs-primary-link:hover {
+  background: var(--adbs-blue-dark);
+  transform: translateY(-3px);
+}
+
+.adbs-service-stack {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.adbs-service-card {
+  position: relative;
+  min-height: 250px;
+  border: 1px solid rgba(220,227,232,0.95);
+  border-radius: 30px;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.98), rgba(255,255,255,0.78));
+  padding: 28px;
+  overflow: hidden;
+  box-shadow: 0 12px 38px rgba(18,33,46,0.055);
+  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.adbs-service-card::before {
+  content: attr(data-number);
+  position: absolute;
+  top: 8px;
+  inset-inline-end: 22px;
+  color: rgba(0,95,147,0.06);
+  font-size: 82px;
+  line-height: 1;
+  font-weight: 950;
+  letter-spacing: -0.08em;
+}
+
+.adbs-service-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 28px 70px rgba(18,33,46,0.12);
+  border-color: rgba(0,95,147,0.26);
+}
+
+.adbs-service-icon {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  color: var(--adbs-blue);
+  background: var(--adbs-bg);
+  border: 1px solid rgba(0,95,147,0.12);
+  margin-bottom: 28px;
+}
+
+.adbs-service-card:hover .adbs-service-icon {
+  background: var(--adbs-blue);
+  color: white;
+}
+
+.adbs-service-card h3 {
+  position: relative;
+  color: var(--adbs-navy) !important;
+  font-size: 22px;
+  line-height: 1.35;
+  font-weight: 950;
+  margin-bottom: 12px;
+}
+
+.adbs-service-card p {
+  position: relative;
+  font-size: 14px;
+  line-height: 1.85;
+  margin-bottom: 22px;
+}
+
+.adbs-text-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--adbs-blue) !important;
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.adbs-metrics-section {
+  padding: 34px 24px;
+  background: var(--adbs-bg);
+  border-top: 1px solid var(--adbs-border);
+  border-bottom: 1px solid var(--adbs-border);
+}
+
+.adbs-metrics-grid {
+  max-width: 1320px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.adbs-metric {
+  border: 1px solid var(--adbs-border);
+  border-radius: 24px;
+  background: rgba(255,255,255,0.9);
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 10px 28px rgba(18,33,46,0.045);
+}
+
+.adbs-metric strong {
+  display: block;
+  color: var(--adbs-blue);
+  font-size: 36px;
+  line-height: 1;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+}
+
+.adbs-metric span {
+  display: block;
+  margin-top: 10px;
+  color: var(--adbs-muted);
+  font-weight: 800;
+}
+
+.adbs-why {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 52px;
+  align-items: center;
+}
+
+.adbs-image-frame {
+  position: relative;
+  border-radius: 38px;
+  background: white;
+  border: 1px solid var(--adbs-border);
+  padding: 12px;
+  box-shadow: 0 28px 80px rgba(18,33,46,0.12);
+}
+
+.adbs-image-frame img {
+  width: 100%;
+  height: 560px;
+  object-fit: cover;
+  border-radius: 28px;
+  transform: none !important;
+}
+
+.adbs-floating-note {
+  position: absolute;
+  inset-inline-end: 34px;
+  bottom: -26px;
+  width: min(300px, 80%);
+  border: 1px solid var(--adbs-border);
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(14px);
+  border-radius: 28px;
+  padding: 22px;
+  box-shadow: 0 24px 70px rgba(18,33,46,0.16);
+}
+
+.adbs-floating-note p {
+  color: var(--adbs-navy);
+  font-size: 22px;
+  font-weight: 950;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.adbs-why-list {
+  display: grid;
+  gap: 14px;
+  margin-top: 34px;
+}
+
+.adbs-why-item {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  gap: 16px;
+  align-items: start;
+  border: 1px solid var(--adbs-border);
+  border-radius: 24px;
+  background: rgba(255,255,255,0.86);
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(18,33,46,0.04);
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
+}
+
+.adbs-why-item:hover {
+  transform: translateX(-6px);
+  box-shadow: 0 20px 50px rgba(18,33,46,0.09);
+}
+
+.adbs-why-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: var(--adbs-bg);
+  color: var(--adbs-blue);
+  border: 1px solid rgba(0,95,147,0.12);
+}
+
+.adbs-why-item h4 {
+  color: var(--adbs-navy);
+  font-size: 19px;
+  font-weight: 950;
+  margin: 0 0 5px;
+}
+
+.adbs-why-item p {
+  font-size: 14px;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.adbs-cta {
+  position: relative;
+  padding: 96px 24px;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(0,95,147,0.28), transparent 34%),
+    var(--adbs-navy);
+}
+
+.adbs-cta-card {
+  max-width: 980px;
+  margin: 0 auto;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 42px;
+  background: rgba(255,255,255,0.065);
+  backdrop-filter: blur(16px);
+  padding: clamp(38px, 6vw, 76px);
+  box-shadow: 0 30px 100px rgba(0,0,0,0.20);
+}
+
+.adbs-cta-card h2 {
+  color: white !important;
+  font-size: clamp(42px, 6vw, 82px);
+  line-height: 0.98;
+  font-weight: 950;
+  letter-spacing: -0.06em;
+}
+
+.adbs-cta-card p {
+  color: rgba(255,255,255,0.72) !important;
+  max-width: 680px;
+  margin: 24px auto 32px;
+  font-size: 18px;
+}
+
+@media (max-width: 1024px) {
+  .adbs-section-head,
+  .adbs-bento,
+  .adbs-why {
+    grid-template-columns: 1fr;
+  }
+
+  .adbs-feature-card {
+    min-height: 430px;
+  }
+
+  .adbs-service-stack {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .adbs-section {
+    padding: 70px 18px;
+  }
+
+  .adbs-service-stack,
+  .adbs-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .adbs-title {
+    font-size: 42px;
+  }
+
+  .adbs-feature-card {
+    min-height: 390px;
+    border-radius: 28px;
+  }
+
+  .adbs-service-card {
+    min-height: auto;
+  }
+
+  .adbs-image-frame img {
+    height: 380px;
+  }
+}
+
+
+/* =========================================================
+   FORCE New Modern Hero - Home
+   Same ADBS colors
+   ========================================================= */
+
+.adbs-hero-force {
+  position: relative;
+  overflow: hidden;
+  min-height: calc(100vh - 90px);
+  padding: 80px 24px 90px;
+  display: flex;
+  align-items: center;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(0,95,147,0.13), transparent 30%),
+    linear-gradient(135deg, #ffffff 0%, var(--adbs-bg) 56%, #ffffff 100%);
+}
+
+.adbs-hero-force-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(18,33,46,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(18,33,46,0.035) 1px, transparent 1px);
+  background-size: 64px 64px;
+  opacity: 0.75;
+}
+
+.adbs-hero-force-container {
+  position: relative;
+  z-index: 2;
+  max-width: 1320px;
+  width: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 0.95fr;
+  gap: 58px;
+  align-items: center;
+}
+
+.adbs-hero-force-badge {
+  width: fit-content;
+  margin-bottom: 26px;
+  padding: 11px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--adbs-border);
+  background: rgba(255,255,255,0.88);
+  color: var(--adbs-blue);
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  box-shadow: 0 12px 32px rgba(18,33,46,0.06);
+}
+
+.adbs-hero-force h1 {
+  margin: 0;
+  color: var(--adbs-navy);
+  font-size: clamp(54px, 7.2vw, 106px);
+  line-height: 0.94;
+  letter-spacing: -0.075em;
+  font-weight: 950;
+}
+
+.adbs-hero-force h1 span,
+.adbs-hero-force h1 strong {
+  display: block;
+}
+
+.adbs-hero-force h1 strong {
+  color: var(--adbs-blue);
+  font-style: italic;
+  font-weight: 800;
+}
+
+.adbs-hero-force p {
+  max-width: 700px;
+  margin-top: 28px;
+  color: var(--adbs-muted);
+  font-size: clamp(17px, 1.4vw, 22px);
+  line-height: 1.9;
+  font-weight: 650;
+}
+
+.adbs-hero-force-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 34px;
+}
+
+.adbs-hero-force-primary,
+.adbs-hero-force-secondary {
+  min-height: 58px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 999px;
+  padding: 0 28px;
+  font-weight: 950;
+  text-decoration: none !important;
+}
+
+.adbs-hero-force-primary {
+  background: var(--adbs-blue);
+  color: #fff !important;
+  box-shadow: 0 20px 48px rgba(0,95,147,0.25);
+}
+
+.adbs-hero-force-secondary {
+  background: rgba(255,255,255,0.88);
+  color: var(--adbs-blue) !important;
+  border: 1px solid var(--adbs-border);
+}
+
+.adbs-hero-force-primary:hover,
+.adbs-hero-force-secondary:hover {
+  transform: translateY(-3px);
+}
+
+.adbs-hero-force-stats {
+  display: flex;
+  gap: 14px;
+  margin-top: 34px;
+}
+
+.adbs-hero-force-stats div {
+  min-width: 132px;
+  border: 1px solid var(--adbs-border);
+  border-radius: 24px;
+  background: rgba(255,255,255,0.78);
+  backdrop-filter: blur(14px);
+  padding: 18px 20px;
+  box-shadow: 0 12px 34px rgba(18,33,46,0.055);
+}
+
+.adbs-hero-force-stats strong {
+  display: block;
+  color: var(--adbs-blue);
+  font-size: 34px;
+  line-height: 1;
+  font-weight: 950;
+}
+
+.adbs-hero-force-stats span {
+  display: block;
+  margin-top: 8px;
+  color: var(--adbs-muted);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.adbs-hero-force-visual {
+  position: relative;
+  min-height: 630px;
+  border-radius: 46px;
+  overflow: hidden;
+  background: var(--adbs-navy);
+  box-shadow: 0 38px 110px rgba(18,33,46,0.18);
+  border: 1px solid rgba(220,227,232,0.95);
+}
+
+.adbs-hero-force-visual img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: none !important;
+  opacity: 0.9;
+}
+
+.adbs-hero-force-visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.02), rgba(18,33,46,0.62)),
+    radial-gradient(circle at 75% 20%, rgba(0,95,147,0.26), transparent 34%);
+}
+
+.adbs-hero-force-card {
+  position: absolute;
+  z-index: 2;
+  inset-inline-start: 28px;
+  bottom: 28px;
+  width: min(410px, calc(100% - 56px));
+  border: 1px solid rgba(255,255,255,0.20);
+  border-radius: 28px;
+  background: rgba(18,33,46,0.66);
+  backdrop-filter: blur(18px);
+  padding: 24px;
+  color: white;
+}
+
+.adbs-hero-force-card strong {
+  display: block;
+  color: white;
+  font-size: 24px;
+  font-weight: 950;
+  line-height: 1.35;
+  margin-bottom: 8px;
+}
+
+.adbs-hero-force-card span {
+  color: rgba(255,255,255,0.74);
+  line-height: 1.7;
+}
+
+/* Reduce the big gap after hero */
+.adbs-section {
+  padding-top: 76px !important;
+}
+
+@media (max-width: 1100px) {
+  .adbs-hero-force-container {
+    grid-template-columns: 1fr;
+  }
+
+  .adbs-hero-force-visual {
+    min-height: 480px;
+  }
+}
+
+@media (max-width: 720px) {
+  .adbs-hero-force {
+    padding: 56px 18px 72px;
+  }
+
+  .adbs-hero-force h1 {
+    font-size: clamp(44px, 13vw, 66px);
+  }
+
+  .adbs-hero-force-actions,
+  .adbs-hero-force-stats {
+    flex-direction: column;
+  }
+
+  .adbs-hero-force-primary,
+  .adbs-hero-force-secondary {
+    width: 100%;
+  }
+
+  .adbs-hero-force-visual {
+    min-height: 420px;
+    border-radius: 32px;
+  }
+}
+
+
+/* =========================================================
+   ADBS Hero Balance Fix
+   Cleaner luxury spacing
+   ========================================================= */
+
+.adbs-hero-force {
+  min-height: auto !important;
+  padding: 70px 24px 78px !important;
+}
+
+.adbs-hero-force-container {
+  grid-template-columns: 0.95fr 1.05fr !important;
+  gap: 48px !important;
+}
+
+.adbs-hero-force h1 {
+  font-size: clamp(46px, 5.9vw, 82px) !important;
+  line-height: 1.02 !important;
+  letter-spacing: -0.055em !important;
+}
+
+.adbs-hero-force p {
+  max-width: 640px !important;
+  font-size: clamp(16px, 1.15vw, 19px) !important;
+  line-height: 1.85 !important;
+  margin-top: 24px !important;
+}
+
+.adbs-hero-force-visual {
+  min-height: 520px !important;
+  border-radius: 38px !important;
+}
+
+.adbs-hero-force-card {
+  bottom: 22px !important;
+  inset-inline-start: 22px !important;
+  width: min(370px, calc(100% - 44px)) !important;
+  border-radius: 24px !important;
+  padding: 20px !important;
+}
+
+.adbs-hero-force-card strong {
+  font-size: 21px !important;
+}
+
+.adbs-hero-force-actions {
+  margin-top: 28px !important;
+}
+
+.adbs-hero-force-stats {
+  margin-top: 28px !important;
+}
+
+.adbs-hero-force-stats div {
+  padding: 15px 18px !important;
+  border-radius: 20px !important;
+}
+
+.adbs-hero-force-stats strong {
+  font-size: 28px !important;
+}
+
+/* Services section should not feel like a second hero */
+.adbs-section.bg-white {
+  padding-top: 82px !important;
+}
+
+.adbs-section-head {
+  align-items: center !important;
+  margin-bottom: 38px !important;
+}
+
+.adbs-section-head .adbs-title {
+  font-size: clamp(36px, 4.3vw, 62px) !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.045em !important;
+}
+
+.adbs-section-head .adbs-lead {
+  font-size: 17px !important;
+  line-height: 1.85 !important;
+}
+
+.adbs-feature-card {
+  min-height: 430px !important;
+  border-radius: 32px !important;
+}
+
+.adbs-service-card {
+  min-height: 220px !important;
+  border-radius: 26px !important;
+  padding: 24px !important;
+}
+
+.adbs-service-card::before {
+  font-size: 66px !important;
+}
+
+.adbs-service-icon {
+  width: 52px !important;
+  height: 52px !important;
+  border-radius: 18px !important;
+  margin-bottom: 22px !important;
+}
+
+.adbs-service-card h3 {
+  font-size: 20px !important;
+}
+
+.adbs-service-card p {
+  font-size: 13.5px !important;
+  line-height: 1.75 !important;
+}
+
+/* Remove awkward giant empty feeling before next sections */
+.adbs-metrics-section {
+  padding: 28px 24px !important;
+}
+
+.adbs-metric {
+  padding: 20px !important;
+  border-radius: 22px !important;
+}
+
+.adbs-metric strong {
+  font-size: 32px !important;
+}
+
+/* Mobile/tablet balance */
+@media (max-width: 1100px) {
+  .adbs-hero-force-container {
+    grid-template-columns: 1fr !important;
+  }
+
+  .adbs-hero-force {
+    padding-top: 58px !important;
+  }
+
+  .adbs-hero-force-visual {
+    min-height: 430px !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .adbs-hero-force h1 {
+    font-size: clamp(40px, 12vw, 58px) !important;
+  }
+
+  .adbs-section-head .adbs-title {
+    font-size: 38px !important;
+  }
+}
+
+
+/* =========================================================
+   ADBS Services Section Balance Fix
+   Cleaner, more premium, less crowded
+   ========================================================= */
+
+/* Reduce first section height and visual noise */
+.adbs-section.bg-white {
+  padding-top: 64px !important;
+  padding-bottom: 76px !important;
+}
+
+/* Services heading layout */
+.adbs-section-head {
+  grid-template-columns: 0.85fr 1.15fr !important;
+  gap: 34px !important;
+  margin-bottom: 32px !important;
+  align-items: center !important;
+}
+
+/* Make services title elegant, not giant */
+.adbs-section-head .adbs-title {
+  font-size: clamp(34px, 3.6vw, 54px) !important;
+  line-height: 1.12 !important;
+  letter-spacing: -0.035em !important;
+  max-width: 620px !important;
+}
+
+.adbs-section-head .adbs-lead {
+  font-size: 16px !important;
+  line-height: 1.75 !important;
+  max-width: 620px !important;
+}
+
+/* Put feature image on the side without overpowering cards */
+.adbs-bento {
+  grid-template-columns: 1.1fr 0.9fr !important;
+  gap: 22px !important;
+  align-items: stretch !important;
+}
+
+/* In RTL layout, keep cards first visually cleaner */
+[dir="rtl"] .adbs-bento {
+  direction: rtl;
+}
+
+[dir="rtl"] .adbs-service-stack,
+[dir="rtl"] .adbs-feature-card {
+  direction: rtl;
+}
+
+/* Service cards compact and premium */
+.adbs-service-stack {
+  gap: 16px !important;
+}
+
+.adbs-service-card {
+  min-height: 205px !important;
+  padding: 22px !important;
+  border-radius: 24px !important;
+}
+
+.adbs-service-card::before {
+  font-size: 58px !important;
+  top: 10px !important;
+  opacity: 0.9 !important;
+}
+
+.adbs-service-icon {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 16px !important;
+  margin-bottom: 18px !important;
+}
+
+.adbs-service-card h3 {
+  font-size: 19px !important;
+  margin-bottom: 9px !important;
+}
+
+.adbs-service-card p {
+  font-size: 13px !important;
+  line-height: 1.68 !important;
+  margin-bottom: 16px !important;
+}
+
+.adbs-text-link {
+  font-size: 11px !important;
+}
+
+/* Feature image card should be elegant, not huge */
+.adbs-feature-card {
+  min-height: 426px !important;
+  border-radius: 30px !important;
+}
+
+.adbs-feature-content {
+  padding: 30px !important;
+}
+
+.adbs-feature-icon {
+  width: 58px !important;
+  height: 58px !important;
+  border-radius: 20px !important;
+}
+
+.adbs-feature-content h3 {
+  font-size: clamp(28px, 2.7vw, 42px) !important;
+  line-height: 1.08 !important;
+}
+
+.adbs-feature-content p {
+  font-size: 15px !important;
+  line-height: 1.75 !important;
+}
+
+.adbs-feature-actions {
+  margin-top: 20px !important;
+}
+
+/* Metrics section closer and cleaner */
+.adbs-metrics-section {
+  padding-top: 24px !important;
+  padding-bottom: 24px !important;
+}
+
+.adbs-metrics-grid {
+  gap: 12px !important;
+}
+
+.adbs-metric {
+  padding: 18px !important;
+}
+
+/* Why section spacing */
+.adbs-section:not(.bg-white) {
+  padding-top: 74px !important;
+  padding-bottom: 84px !important;
+}
+
+.adbs-why .adbs-title {
+  font-size: clamp(36px, 4.4vw, 62px) !important;
+  line-height: 1.08 !important;
+}
+
+/* Desktop visual order polish */
+@media (min-width: 1025px) {
+  .adbs-bento .adbs-feature-card {
+    order: 2;
+  }
+
+  .adbs-bento .adbs-service-stack {
+    order: 1;
+  }
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .adbs-section-head,
+  .adbs-bento {
+    grid-template-columns: 1fr !important;
+  }
+
+  .adbs-feature-card {
+    min-height: 380px !important;
+  }
+}
+
+/* Mobile */
+@media (max-width: 720px) {
+  .adbs-section.bg-white {
+    padding-top: 54px !important;
+    padding-bottom: 60px !important;
+  }
+
+  .adbs-section-head .adbs-title {
+    font-size: 36px !important;
+  }
+
+  .adbs-service-stack {
+    grid-template-columns: 1fr !important;
+  }
+
+  .adbs-service-card {
+    min-height: auto !important;
+  }
+
+  .adbs-feature-card {
+    min-height: 360px !important;
+  }
+}
+
+
+/* =========================================================
+   ADBS Hero Fold Fix
+   Make full hero visible in first screen
+   ========================================================= */
+
+.adbs-hero-force {
+  padding-top: 42px !important;
+  padding-bottom: 48px !important;
+  min-height: auto !important;
+}
+
+.adbs-hero-force-container {
+  grid-template-columns: 0.92fr 1.08fr !important;
+  gap: 40px !important;
+  align-items: center !important;
+}
+
+/* الصورة كانت كبيرة زيادة */
+.adbs-hero-force-visual {
+  min-height: 445px !important;
+  max-height: 445px !important;
+  border-radius: 34px !important;
+}
+
+/* العنوان كان ضخم زيادة */
+.adbs-hero-force h1 {
+  font-size: clamp(42px, 5.25vw, 72px) !important;
+  line-height: 1.04 !important;
+  letter-spacing: -0.05em !important;
+}
+
+.adbs-hero-force p {
+  margin-top: 18px !important;
+  font-size: 16px !important;
+  line-height: 1.75 !important;
+  max-width: 610px !important;
+}
+
+/* تقليل المسافات حتى تظهر الأرقام */
+.adbs-hero-force-actions {
+  margin-top: 22px !important;
+}
+
+.adbs-hero-force-primary,
+.adbs-hero-force-secondary {
+  min-height: 52px !important;
+  padding: 0 24px !important;
+}
+
+.adbs-hero-force-stats {
+  margin-top: 20px !important;
+  gap: 12px !important;
+}
+
+.adbs-hero-force-stats div {
+  min-width: 118px !important;
+  padding: 13px 16px !important;
+  border-radius: 18px !important;
+}
+
+.adbs-hero-force-stats strong {
+  font-size: 26px !important;
+}
+
+.adbs-hero-force-stats span {
+  font-size: 12px !important;
+}
+
+/* الكارد داخل الصورة */
+.adbs-hero-force-card {
+  bottom: 18px !important;
+  inset-inline-start: 18px !important;
+  width: min(340px, calc(100% - 36px)) !important;
+  padding: 18px !important;
+  border-radius: 22px !important;
+}
+
+.adbs-hero-force-card strong {
+  font-size: 19px !important;
+}
+
+.adbs-hero-force-card span {
+  font-size: 13px !important;
+}
+
+/* البادج */
+.adbs-hero-force-badge {
+  margin-bottom: 18px !important;
+  padding: 9px 14px !important;
+  font-size: 11px !important;
+}
+
+/* تقليل بداية السكشن اللي بعد الهيرو */
+.adbs-section.bg-white {
+  padding-top: 54px !important;
+}
+
+@media (max-width: 1100px) {
+  .adbs-hero-force-container {
+    grid-template-columns: 1fr !important;
+  }
+
+  .adbs-hero-force-visual {
+    min-height: 390px !important;
+    max-height: none !important;
+  }
+}
+
+
+/* =========================================================
+   ADBS Hero Text Size Fix
+   Make hero title more elegant and readable
+   ========================================================= */
+
+.adbs-hero-force h1 {
+  font-size: clamp(38px, 4.55vw, 64px) !important;
+  line-height: 1.13 !important;
+  letter-spacing: -0.035em !important;
+  max-width: 680px !important;
+}
+
+.adbs-hero-force h1 strong {
+  letter-spacing: -0.025em !important;
+}
+
+.adbs-hero-force p {
+  font-size: 15.5px !important;
+  line-height: 1.8 !important;
+  max-width: 620px !important;
+  margin-top: 16px !important;
+}
+
+/* ترتيب البلوك النصي */
+.adbs-hero-force-copy {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+}
+
+/* بما أن الصفحة عربي، نخلي النص يمين لكن بدون تضخيم */
+[dir="rtl"] .adbs-hero-force-copy {
+  align-items: flex-end !important;
+  text-align: right !important;
+}
+
+.adbs-hero-force-badge {
+  margin-bottom: 14px !important;
+}
+
+/* الأزرار والأرقام أقرب للنص */
+.adbs-hero-force-actions {
+  margin-top: 20px !important;
+}
+
+.adbs-hero-force-stats {
+  margin-top: 18px !important;
+}
+
+/* حجم الصورة مقابل النص */
+.adbs-hero-force-visual {
+  min-height: 430px !important;
+  max-height: 430px !important;
+}
+
+/* للشاشات المتوسطة */
+@media (max-width: 1200px) {
+  .adbs-hero-force h1 {
+    font-size: clamp(36px, 4.2vw, 56px) !important;
+  }
+}
+
+/* للموبايل */
+@media (max-width: 720px) {
+  .adbs-hero-force h1 {
+    font-size: clamp(34px, 10vw, 48px) !important;
+    line-height: 1.18 !important;
+  }
+}
+
+
+/* =========================================================
+   FINAL Clean Premium Hero
+   Same ADBS colors - no split layout
+   ========================================================= */
+
+.adbs-hero-clean {
+  position: relative;
+  min-height: calc(100vh - 92px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 96px 24px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.adbs-hero-clean-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,0.96) 0%,
+      rgba(255,255,255,0.86) 42%,
+      rgba(255,255,255,0.70) 100%
+    ),
+    url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=1800&auto=format&fit=crop");
+  background-size: cover;
+  background-position: center;
+  filter: saturate(0.95) contrast(1.03);
+}
+
+.adbs-hero-clean::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(0, 95, 147, 0.10), transparent 30%),
+    linear-gradient(180deg, transparent 0%, rgba(243,246,248,0.92) 100%);
+  pointer-events: none;
+}
+
+.adbs-hero-clean-content {
+  position: relative;
+  z-index: 2;
+  width: min(980px, 100%);
+  margin: 0 auto;
+  text-align: center;
+  padding-top: 10px;
+}
+
+.adbs-hero-clean-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--adbs-border);
+  background: rgba(255,255,255,0.84);
+  color: var(--adbs-blue);
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.22em;
+  box-shadow: 0 12px 34px rgba(18,33,46,0.06);
+}
+
+.adbs-hero-clean h1 {
+  margin: 0;
+  color: var(--adbs-navy);
+  font-size: clamp(50px, 6.4vw, 92px);
+  line-height: 1.08;
+  letter-spacing: -0.055em;
+  font-weight: 950;
+}
+
+.adbs-hero-clean h1 span {
+  display: block;
+  color: var(--adbs-blue);
+  font-style: italic;
+  font-weight: 800;
+  margin-top: 4px;
+}
+
+.adbs-hero-clean p {
+  max-width: 760px;
+  margin: 28px auto 0;
+  color: var(--adbs-muted);
+  font-size: clamp(17px, 1.45vw, 22px);
+  line-height: 1.9;
+  font-weight: 650;
+}
+
+.adbs-hero-clean-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 34px;
+}
+
+.adbs-hero-clean-primary,
+.adbs-hero-clean-secondary {
+  min-height: 58px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 999px;
+  padding: 0 30px;
+  font-weight: 950;
+  text-decoration: none !important;
+}
+
+.adbs-hero-clean-primary {
+  background: var(--adbs-blue);
+  color: #fff !important;
+  box-shadow: 0 20px 48px rgba(0,95,147,0.25);
+}
+
+.adbs-hero-clean-secondary {
+  background: rgba(255,255,255,0.88);
+  color: var(--adbs-blue) !important;
+  border: 1px solid var(--adbs-border);
+  box-shadow: 0 12px 34px rgba(18,33,46,0.06);
+}
+
+.adbs-hero-clean-primary:hover,
+.adbs-hero-clean-secondary:hover {
+  transform: translateY(-3px);
+}
+
+.adbs-hero-clean-stats {
+  margin: 44px auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(130px, 1fr));
+  gap: 14px;
+  max-width: 620px;
+}
+
+.adbs-hero-clean-stats div {
+  border: 1px solid var(--adbs-border);
+  border-radius: 24px;
+  background: rgba(255,255,255,0.78);
+  backdrop-filter: blur(14px);
+  padding: 18px 20px;
+  box-shadow: 0 12px 34px rgba(18,33,46,0.055);
+}
+
+.adbs-hero-clean-stats strong {
+  display: block;
+  color: var(--adbs-blue);
+  font-size: 30px;
+  line-height: 1;
+  font-weight: 950;
+}
+
+.adbs-hero-clean-stats span {
+  display: block;
+  margin-top: 8px;
+  color: var(--adbs-muted);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+/* Hide old forced hero styles if any remain */
+.adbs-hero-force {
+  display: none !important;
+}
+
+/* Make next section start normally */
+.adbs-section.bg-white {
+  padding-top: 80px !important;
+}
+
+@media (max-width: 720px) {
+  .adbs-hero-clean {
+    min-height: auto;
+    padding: 76px 18px;
+  }
+
+  .adbs-hero-clean h1 {
+    font-size: clamp(42px, 11vw, 58px);
+    line-height: 1.15;
+  }
+
+  .adbs-hero-clean p {
+    font-size: 16px;
+  }
+
+  .adbs-hero-clean-actions {
+    flex-direction: column;
+  }
+
+  .adbs-hero-clean-primary,
+  .adbs-hero-clean-secondary {
+    width: 100%;
+  }
+
+  .adbs-hero-clean-stats {
+    grid-template-columns: 1fr;
+  }
+}
+

@@ -1,0 +1,51 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Facebook, Instagram, Linkedin, Phone, Twitter, MessageCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+
+export const Footer = () => {
+  const { i18n } = useTranslation();
+  const isRtl = i18n.language === 'ar';
+
+  return (
+    <footer className="adbs-footer-simple" dir={isRtl ? 'rtl' : 'ltr'}>
+      <div className="adbs-footer-simple-container">
+        <div className="adbs-footer-simple-brand">
+          <h3>أساس الدقة / ADBS</h3>
+          <p>
+            هندسة مالية واستشارات استراتيجية مخصصة تساعد الشركات على النمو بثقة ووضوح.
+          </p>
+
+          <div className="adbs-footer-simple-phone">
+            <Phone size={18} />
+            <div>
+              <span>رقم الهاتف</span>
+              <strong>+962 7X XXX XXXX</strong>
+            </div>
+          </div>
+        </div>
+
+        <div className="adbs-footer-simple-side">
+          <nav className="adbs-footer-simple-links" aria-label="Footer links">
+            <Link to="/">الرئيسية</Link>
+            <Link to="/services">الخدمات</Link>
+            <Link to="/about">من نحن</Link>
+            <Link to="/contact">اتصل بنا</Link>
+          </nav>
+
+          <div className="adbs-footer-simple-social">
+            <a href="#" aria-label="Facebook"><Facebook size={22} /></a>
+            <a href="#" aria-label="X"><Twitter size={22} /></a>
+            <a href="#" aria-label="WhatsApp"><MessageCircle size={22} /></a>
+            <a href="#" aria-label="Instagram"><Instagram size={22} /></a>
+            <a href="#" aria-label="LinkedIn"><Linkedin size={22} /></a>
+          </div>
+        </div>
+      </div>
+
+      <div className="adbs-footer-simple-bottom">
+        © 2024 أساس الدقة. جميع الحقوق محفوظة.
+      </div>
+    </footer>
+  );
+};
