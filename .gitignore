@@ -7,3 +7,13 @@ dist/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# backups / temporary files
+*.bak
+*.backup*
+*before*
+safe-backup-before-edits-*/
+src_backup_before_*/
+package_backup_*.json
+vite.config.backup_*
+Pasted image.png
