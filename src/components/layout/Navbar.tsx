@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, ChevronRight, Languages, Home as HomeIcon, Info, Briefcase, MessageSquare, ArrowUpRight } from 'lucide-react';
+import { Menu, X, ChevronRight, Languages, Home as HomeIcon, Info, Briefcase, MessageSquare } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useTranslation } from 'react-i18next';
 
@@ -12,6 +13,7 @@ export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const isRtl = i18n.language === 'ar';
 
   const navLinks = [
     { id: 'home', label: t('nav.home'), path: '/', icon: HomeIcon },
@@ -25,6 +27,8 @@ export const Navbar = () => {
     i18n.changeLanguage(newLang);
   };
 
+  const closeMenu = () => setIsOpen(false);
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
@@ -33,20 +37,27 @@ export const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   return (
     <nav
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
-        scrolled 
-          ? 'bg-white/95 backdrop-blur-md py-4 shadow-sm border-b border-gray-100' 
+        scrolled
+          ? 'bg-white/95 backdrop-blur-md py-4 shadow-sm border-b border-gray-100'
           : 'bg-white/95 backdrop-blur-md py-4 shadow-sm border-b border-gray-100'
       )}
     >
-      <div className="max-w-container-max mx-auto px-6 md:px-12 grid grid-cols-[1fr_auto_1fr] items-center gap-8">
+      <div className="max-w-container-max mx-auto px-6 md:px-12 flex justify-between items-center lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-8">
         {/* Logo/Brand */}
         <div className="flex-shrink-0 justify-self-start">
           <Link to="/" className="flex items-center">
-            <Logo showText={true} className="scale-150 lg:scale-[1.85] origin-right" />
+            <Logo showText={true} className={cn('scale-150 lg:scale-[1.85]', isRtl ? 'origin-right' : 'origin-left')} />
           </Link>
         </div>
 
@@ -60,8 +71,8 @@ export const Navbar = () => {
                   key={link.id}
                   to={link.path}
                   className={cn(
-                    "px-5 py-2 text-sm font-bold tracking-tight transition-all relative group focus:outline-none focus:ring-0",
-                    isActive ? "text-[#005F93]" : "text-[#4B5563] hover:text-[#005F93]"
+                    'px-5 py-2 text-sm font-bold tracking-tight transition-all relative group focus:outline-none focus:ring-0',
+                    isActive ? 'text-[#005F93]' : 'text-[#4B5563] hover:text-[#005F93]'
                   )}
                 >
                   {link.id === 'home' ? (
@@ -70,7 +81,7 @@ export const Navbar = () => {
                     link.label
                   )}
                   {isActive && (
-                    <motion.div 
+                    <motion.div
                       layoutId="nav-underline"
                       className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-[#005F93] rounded-full"
                     />
@@ -86,7 +97,7 @@ export const Navbar = () => {
 
         {/* Actions */}
         <div className="hidden lg:flex items-center justify-end gap-8 justify-self-end">
-          <button 
+          <button
             onClick={toggleLanguage}
             className="text-[11px] font-black tracking-widest text-[#12212E]/60 hover:text-[#005F93] transition-colors uppercase flex items-center gap-1.5"
           >
@@ -96,7 +107,7 @@ export const Navbar = () => {
 
           <Link
             to="/contact"
-            className="bg-[#005F93] text-white px-8 py-3 text-[19px] font-bold hover:bg-[#004B75] transition-all tracking-tight uppercase rounded-xl shadow-md hover:shadow-lg active:scale-95"
+            className="navbar-consultation-btn bg-[#005F93] text-white px-8 py-3 text-[19px] font-bold hover:bg-[#004B75] transition-all tracking-tight uppercase rounded-xl shadow-md hover:shadow-lg active:scale-95"
           >
             {t('services.cta_button')}
           </Link>
@@ -104,7 +115,7 @@ export const Navbar = () => {
 
         {/* Mobile Toggle */}
         <div className="flex items-center gap-4 lg:hidden justify-self-end">
-          <button 
+          <button
             onClick={toggleLanguage}
             className="text-[12px] font-black tracking-widest text-[#005F93] uppercase px-2 py-1 bg-[#005F93]/5 rounded-md"
           >
@@ -114,105 +125,129 @@ export const Navbar = () => {
             className="text-[#12212E] p-1"
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle menu"
+            aria-expanded={isOpen}
           >
             {isOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="fixed inset-0 bg-white z-[60] flex flex-col p-8 pt-24"
-          >
-            <div className="flex items-center justify-between absolute top-0 left-0 right-0 p-6 bg-white border-b border-gray-100">
-              <Logo showText={true} className="scale-125 origin-left" />
-              <button
-                className="p-2 text-[#12212E]"
-                onClick={() => setIsOpen(false)}
+      {/* Mobile Menu — portaled above page content */}
+      {typeof document !== 'undefined' &&
+        createPortal(
+          <AnimatePresence>
+            {isOpen && (
+              <motion.div
+                role="dialog"
+                aria-modal="true"
+                aria-label={t('nav_labels.navigation')}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="mobile-menu-panel fixed inset-0 z-[200] flex flex-col bg-white lg:hidden"
               >
-                <X size={28} />
-              </button>
-            </div>
-
-            <div className="flex flex-col gap-4 mt-8 px-2">
-              <span className="text-[11px] font-black tracking-[0.3em] text-[#005F93] uppercase mb-2 px-4 opacity-60">
-                {t('nav_labels.navigation')}
-              </span>
-              {navLinks.map((link, index) => {
-                const isActive = location.pathname === link.path;
-                return (
-                  <motion.div
-                    key={link.path}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                  >
-                    <Link
-                      to={link.path}
-                      onClick={() => setIsOpen(false)}
-                      className={cn(
-                        'text-xl font-bold py-5 px-6 flex items-center justify-between transition-all rounded-2xl border-2',
-                        isActive 
-                          ? 'bg-black text-white border-black shadow-lg shadow-black/20' 
-                          : 'bg-gray-50 text-[#12212E] border-transparent hover:bg-gray-100 hover:border-gray-200'
-                      )}
-                    >
-                      <span className="tracking-tight">
-                        {link.id === 'home' ? t('nav.home') : link.label}
-                      </span>
-                      <ChevronRight 
-                        className={cn(
-                          "transition-transform",
-                          i18n.language === 'ar' ? 'rotate-180' : '',
-                          isActive ? 'text-white' : 'text-gray-400'
-                        )} 
-                        size={20}
-                      />
-                    </Link>
-                  </motion.div>
-                );
-              })}
-            </div>
-
-            <div className="mt-auto space-y-8 pb-10">
-              <Link
-                to="/contact"
-                onClick={() => setIsOpen(false)}
-                className="w-full bg-black text-white text-center py-5 text-xl font-black tracking-tight uppercase rounded-2xl shadow-lg shadow-black/20 flex items-center justify-center gap-3 active:scale-95 transition-transform"
-              >
-                {t('services.cta_button')}
-                <ChevronRight size={20} className={cn(i18n.language === 'ar' ? 'rotate-180' : '')} />
-              </Link>
-              
-              <div className="flex items-center justify-between pt-8 border-t border-gray-100">
-                 <div className="flex flex-col gap-1">
-                   <span className="text-[10px] font-black tracking-widest text-gray-400 uppercase">
-                     {t('nav_labels.heritage')}
-                   </span>
-                   <span className="text-xs font-bold text-[#12212E]">ADBS © 2026</span>
-                 </div>
-                 
-                 <button 
-                  onClick={() => {
-                    toggleLanguage();
-                    setIsOpen(false);
-                  }}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-50 text-[12px] font-black tracking-widest text-[#005F93] uppercase transition-colors hover:bg-gray-100"
+              <div className="flex items-center justify-between border-b border-[#E8EDF2] px-6 py-5">
+                <Logo showText={true} className={cn('scale-125', isRtl ? 'origin-right' : 'origin-left')} />
+                <button
+                  type="button"
+                  className="rounded-xl p-2 text-[#12212E] transition-colors hover:bg-[#F4F7F9]"
+                  onClick={closeMenu}
+                  aria-label="Close menu"
                 >
-                  <Languages size={16} />
-                  {i18n.language === 'en' ? 'العربية' : 'English'}
+                  <X size={26} />
                 </button>
               </div>
-            </div>
-          </motion.div>
+
+              <div className="flex flex-1 flex-col overflow-y-auto px-6 py-8">
+                <span className="mb-4 px-1 text-[10px] font-black tracking-[0.28em] text-[#005F93]/70 uppercase">
+                  {t('nav_labels.navigation')}
+                </span>
+
+                <div className="flex flex-col gap-3">
+                  {navLinks.map((link) => {
+                    const isActive = location.pathname === link.path;
+                    const Icon = link.icon;
+                    return (
+                      <Link
+                        key={link.path}
+                        to={link.path}
+                        onClick={closeMenu}
+                        aria-current={isActive ? 'page' : undefined}
+                        className={cn(
+                          'mobile-nav-item group flex items-center gap-4 rounded-2xl border px-4 py-4 transition-colors duration-200 active:scale-[0.98]',
+                          isActive
+                            ? 'border-[#12212E] bg-[#12212E] shadow-[0_10px_28px_rgba(18,33,46,0.22)]'
+                            : 'border-[#E8EDF2] bg-white hover:border-[#005F93]/25 hover:bg-[#F8FBFD] hover:shadow-sm'
+                        )}
+                      >
+                        <span
+                          className={cn(
+                            'flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-colors',
+                            isActive ? 'bg-white/15 text-white' : 'bg-[#E8F3F9] text-[#005F93] group-hover:bg-[#DCEEF7]'
+                          )}
+                        >
+                          <Icon size={20} strokeWidth={2.25} aria-hidden />
+                        </span>
+                        <span
+                          className={cn(
+                            'mobile-nav-item-label flex-1 text-lg font-bold tracking-tight',
+                            isActive ? 'text-white' : 'text-[#12212E]'
+                          )}
+                        >
+                          {link.label}
+                        </span>
+                        <ChevronRight
+                          className={cn(
+                            'mobile-nav-item-chevron shrink-0',
+                            isRtl ? 'rotate-180' : '',
+                            isActive ? 'text-white/90' : 'text-[#12212E]/45 group-hover:text-[#005F93]'
+                          )}
+                          size={20}
+                          strokeWidth={2.5}
+                        />
+                      </Link>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-auto space-y-6 pt-10">
+                  <Link
+                    to="/contact"
+                    onClick={closeMenu}
+                    className="navbar-consultation-btn flex w-full items-center justify-center gap-3 rounded-2xl bg-[#005F93] py-5 text-center text-lg font-black tracking-tight text-white uppercase shadow-[0_12px_28px_rgba(0,95,147,0.28)] transition-all hover:bg-[#004B75] active:scale-[0.98]"
+                  >
+                    {t('services.cta_button')}
+                    <ChevronRight size={20} strokeWidth={2.5} className={cn(isRtl ? 'rotate-180' : '')} />
+                  </Link>
+
+                  <div className="flex items-center justify-between border-t border-[#E8EDF2] pt-6">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[10px] font-black tracking-widest text-[#94A3B8] uppercase">
+                        {t('nav_labels.heritage')}
+                      </span>
+                      <span className="text-xs font-bold text-[#12212E]">ADBS © 2026</span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        toggleLanguage();
+                        closeMenu();
+                      }}
+                      className="flex items-center gap-2 rounded-xl border border-[#E8EDF2] bg-[#F8FBFD] px-4 py-2.5 text-[11px] font-black tracking-widest text-[#005F93] uppercase transition-colors hover:border-[#005F93]/20 hover:bg-[#E8F3F9]"
+                    >
+                      <Languages size={16} />
+                      {i18n.language === 'en' ? 'العربية' : 'English'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+            )}
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
     </nav>
   );
 };

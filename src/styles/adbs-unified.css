@@ -4184,3 +4184,28 @@ nav.fixed div.hidden.lg\:flex.justify-self-end a[href="/contact"]:active {
   -webkit-text-fill-color: #ffffff !important;
 }
 
+/* Mobile menu (portaled to body): explicit contrast, override global contact link rules */
+.mobile-menu-panel a.mobile-nav-item .mobile-nav-item-label {
+  text-shadow: none !important;
+}
+
+.mobile-menu-panel a.mobile-nav-item:not([aria-current='page']) .mobile-nav-item-label {
+  color: #12212e !important;
+  -webkit-text-fill-color: #12212e !important;
+}
+
+.mobile-menu-panel a.mobile-nav-item[aria-current='page'] .mobile-nav-item-label {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+.mobile-menu-panel a.mobile-nav-item:not([aria-current='page']) .mobile-nav-item-chevron {
+  color: rgba(18, 33, 46, 0.45) !important;
+  stroke: rgba(18, 33, 46, 0.45) !important;
+}
+
+.mobile-menu-panel a.mobile-nav-item[aria-current='page'] .mobile-nav-item-chevron {
+  color: rgba(255, 255, 255, 0.9) !important;
+  stroke: rgba(255, 255, 255, 0.9) !important;
+}
+
