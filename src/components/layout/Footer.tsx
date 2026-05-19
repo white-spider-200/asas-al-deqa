@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Instagram, Linkedin, Phone, Twitter, MessageCircle } from 'lucide-react';
+import { Phone, MessageCircle, Mail, Facebook, Instagram, Linkedin } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 export const Footer = () => {
@@ -22,7 +22,7 @@ export const Footer = () => {
             <Phone size={18} />
             <div>
               <span>{isRtl ? 'رقم الهاتف' : 'Phone Number'}</span>
-              <strong>+962 7X XXX XXXX</strong>
+              <strong>+962797006750</strong>
             </div>
           </div>
         </div>
@@ -36,11 +36,21 @@ export const Footer = () => {
           </nav>
 
           <div className="adbs-footer-simple-social">
-            <a href="#" aria-label="Facebook"><Facebook size={22} /></a>
-            <a href="#" aria-label="X"><Twitter size={22} /></a>
-            <a href="#" aria-label="WhatsApp"><MessageCircle size={22} /></a>
-            <a href="#" aria-label="Instagram"><Instagram size={22} /></a>
-            <a href="#" aria-label="LinkedIn"><Linkedin size={22} /></a>
+            <a href="https://www.facebook.com/p/%D8%A7%D8%B3%D8%A7%D8%B3-%D8%A7%D9%84%D8%AF%D9%82%D8%A9-Asas-Aldeqa-100063451226282/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <Facebook size={22} />
+            </a>
+            <a href="https://www.instagram.com/asas_tax/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <Instagram size={22} />
+            </a>
+            <a href="https://www.linkedin.com/in/ibrahim-altous-806061383/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <Linkedin size={22} />
+            </a>
+            <a href="https://wa.me/962797006750" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+              <MessageCircle size={22} />
+            </a>
+            <a href="mailto:info@adfta.com" aria-label="Email">
+              <Mail size={22} />
+            </a>
           </div>
         </div>
       </div>

@@ -223,6 +223,26 @@ export const Contact = () => {
             </div>
           ))}
         </motion.div>
+
+        {/* Map Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="mt-24 rounded-[32px] overflow-hidden border border-[#DCE3E8] shadow-[0_20px_50px_rgba(0,95,147,0.05)] bg-white p-4"
+        >
+          <iframe 
+            src="https://maps.google.com/maps?q=Beit%20Al%20Omor%20Complex%20Khalda%20Amman%20Jordan&t=&z=15&ie=UTF8&iwloc=&output=embed"
+            width="100%" 
+            height="450" 
+            style={{ border: 0, borderRadius: '24px' }} 
+            allowFullScreen 
+            loading="lazy" 
+            referrerPolicy="no-referrer-when-downgrade"
+            title="Office Location"
+          ></iframe>
+        </motion.div>
       </div>
     </div>
   );
