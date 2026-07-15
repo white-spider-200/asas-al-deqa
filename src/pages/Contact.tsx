@@ -1,13 +1,44 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send, Clock, ShieldCheck, CheckCircle2, ChevronRight } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, Clock, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { SEO } from '../components/common/SEO';
-import { cn } from '../lib/utils';
 
 export const Contact = () => {
   const { t, i18n } = useTranslation();
   const isRtl = i18n.dir() === 'rtl';
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('loading');
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          email,
+          message,
+          language: i18n.language,
+        }),
+      });
+
+      if (!res.ok) throw new Error('Failed to send');
+
+      setStatus('success');
+      setName('');
+      setEmail('');
+      setMessage('');
+    } catch {
+      setStatus('error');
+    }
+  };
 
   const contactInfo = [
     {
@@ -99,21 +130,7 @@ export const Contact = () => {
                 </motion.div>
               ))}
             </div>
-
-            {/* Privacy Box */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, duration: 0.6 }}
-              className="p-6 md:p-8 bg-[#E8F3F9] rounded-2xl flex items-center gap-6 border border-[#005F93]/20"
-            >
-              <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-[#005F93] shadow-sm shrink-0">
-                <ShieldCheck size={24} />
-              </div>
-              <p className="text-sm text-[#005F93] leading-relaxed font-bold">
-                {t('contact.confidentiality')}
-              </p>
-            </motion.div>
+            
           </motion.div>
 
           {/* RIGHT SIDE: Form Card */}
@@ -136,13 +153,16 @@ export const Contact = () => {
                   </p>
                 </div>
 
-                <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                <form className="space-y-6" onSubmit={handleSubmit}>
                   <div className="space-y-2">
                     <label className="text-xs font-black text-[#12212E]/60 tracking-widest uppercase px-1">
                       {t('contact.label_name')}
                     </label>
                     <input 
-                      type="text" 
+                      type="text"
+                      required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
                       className="w-full bg-[#F3F6F8] border border-[#DCE3E8] px-6 py-4 rounded-[14px] focus:outline-none focus:border-[#005F93] focus:ring-4 focus:ring-[#005F93]/5 transition-all text-[#12212E] font-semibold placeholder-[#6B7280]/40"
                       placeholder={t('contact.placeholder_name')}
                     />
@@ -153,29 +173,13 @@ export const Contact = () => {
                       {t('contact.label_email')}
                     </label>
                     <input 
-                      type="email" 
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       className="w-full bg-[#F3F6F8] border border-[#DCE3E8] px-6 py-4 rounded-[14px] focus:outline-none focus:border-[#005F93] focus:ring-4 focus:ring-[#005F93]/5 transition-all text-[#12212E] font-semibold placeholder-[#6B7280]/40"
                       placeholder={t('contact.placeholder_email')}
                     />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-xs font-black text-[#12212E]/60 tracking-widest uppercase px-1">
-                      {t('contact.label_subject')}
-                    </label>
-                    <div className="relative group">
-                      <select 
-                        className="w-full bg-[#F3F6F8] border border-[#DCE3E8] px-6 py-4 rounded-[14px] focus:outline-none focus:border-[#005F93] focus:ring-4 focus:ring-[#005F93]/5 transition-all text-[#12212E] appearance-none cursor-pointer font-semibold"
-                      >
-                        <option>{t('services.items.tax_compliance')}</option>
-                        <option>{t('services.items.accounting')}</option>
-                        <option>{t('services.items.tax_litigation')}</option>
-                        <option>{t('services.items.erp')}</option>
-                      </select>
-                      <div className={cn("absolute top-1/2 -translate-y-1/2 pointer-events-none text-[#005F93]", isRtl ? "left-6" : "right-6")}>
-                        <ChevronRight className={cn("rotate-90 transition-transform group-focus-within:-rotate-90")} size={18} />
-                      </div>
-                    </div>
                   </div>
 
                   <div className="space-y-2">
@@ -184,16 +188,32 @@ export const Contact = () => {
                     </label>
                     <textarea 
                       rows={3}
+                      required
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
                       className="w-full bg-[#F3F6F8] border border-[#DCE3E8] px-6 py-4 rounded-[14px] focus:outline-none focus:border-[#005F93] focus:ring-4 focus:ring-[#005F93]/5 transition-all text-[#12212E] resize-none font-semibold leading-relaxed placeholder-[#6B7280]/40"
                       placeholder={t('contact.placeholder_message')}
                     ></textarea>
                   </div>
 
+                  {status === 'success' && (
+                    <p className="text-sm font-semibold text-green-700 bg-green-50 border border-green-200 rounded-[14px] px-6 py-4">
+                      {t('contact.success')}
+                    </p>
+                  )}
+
+                  {status === 'error' && (
+                    <p className="text-sm font-semibold text-red-700 bg-red-50 border border-red-200 rounded-[14px] px-6 py-4">
+                      {t('contact.error')}
+                    </p>
+                  )}
+
                   <button 
                     type="submit"
-                    className="w-full bg-[#005F93] text-white py-5 rounded-[14px] font-bold text-base flex items-center justify-center gap-3 hover:bg-[#004B75] transition-all shadow-lg shadow-[#005F93]/15 active:scale-[0.98] group"
+                    disabled={status === 'loading'}
+                    className="w-full bg-[#005F93] text-white py-5 rounded-[14px] font-bold text-base flex items-center justify-center gap-3 hover:bg-[#004B75] transition-all shadow-lg shadow-[#005F93]/15 active:scale-[0.98] group disabled:opacity-60 disabled:cursor-not-allowed"
                   >
-                    {t('contact.button_send')}
+                    {status === 'loading' ? t('contact.sending') : t('contact.button_send')}
                     <Send size={18} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                   </button>
                 </form>
@@ -232,17 +252,18 @@ export const Contact = () => {
           transition={{ duration: 0.8 }}
           className="mt-24 rounded-[32px] overflow-hidden border border-[#DCE3E8] shadow-[0_20px_50px_rgba(0,95,147,0.05)] bg-white p-4"
         >
-          <iframe 
-            src="https://maps.google.com/maps?q=Beit%20Al%20Omor%20Complex%20Khalda%20Amman%20Jordan&t=&z=15&ie=UTF8&iwloc=&output=embed"
-            width="100%" 
-            height="450" 
-            style={{ border: 0, borderRadius: '24px' }} 
-            allowFullScreen 
-            loading="lazy" 
-            referrerPolicy="no-referrer-when-downgrade"
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d211.48708922356414!2d35.859807721235185!3d31.99361489137771!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x151ca1682f3f48ef%3A0x7a9f5e1f0278ee59!2sTrustech%20Limited%20LLC!5e0!3m2!1sen!2sjo!4v1784099734509!5m2!1sen!2sjo"
+            width="600"
+            height="450"
+            style={{ border: 0 }}
+            allowFullScreen={true}
+            loading="lazy"
+            referrerPolicy="strict-origin-when-cross-origin"
             title="Office Location"
           ></iframe>
         </motion.div>
+   
       </div>
     </div>
   );

@@ -53,7 +53,7 @@ export const Navbar = () => {
           : 'bg-white/95 backdrop-blur-md py-4 shadow-sm border-b border-gray-100'
       )}
     >
-      <div className="max-w-container-max mx-auto px-6 md:px-12 flex justify-between items-center lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-8">
+      <div className="max-w-container-max mx-auto flex items-center justify-between px-6 md:px-12 lg:grid lg:grid-cols-[minmax(180px,1fr)_auto_minmax(300px,1fr)] lg:gap-6 xl:gap-10">
         {/* Logo/Brand */}
         <div className="flex-shrink-0 justify-self-start">
           <Link to="/" className="flex items-center">
@@ -62,38 +62,38 @@ export const Navbar = () => {
         </div>
 
         {/* Desktop Navigation */}
-        <div className="hidden lg:flex justify-self-center justify-center">
-          <div className="flex items-center gap-3">
-            {navLinks.map((link) => {
-              const isActive = location.pathname === link.path;
-              return (
-                <Link
-                  key={link.id}
-                  to={link.path}
-                  className={cn(
-                    'px-5 py-2 text-sm font-bold tracking-tight transition-all relative group focus:outline-none focus:ring-0',
-                    isActive ? 'text-[#005F93]' : 'text-[#4B5563] hover:text-[#005F93]'
-                  )}
-                >
-                  {link.id === 'home' ? (
-                    <HomeIcon size={21} strokeWidth={2.5} aria-label={link.label} />
-                  ) : (
-                    link.label
-                  )}
-                  {isActive && (
-                    <motion.div
-                      layoutId="nav-underline"
-                      className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-[#005F93] rounded-full"
-                    />
-                  )}
-                  {!isActive && (
-                    <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-[#005F93]/40 rounded-full group-hover:w-4 transition-all" />
-                  )}
-                </Link>
-              );
-            })}
+        <div className="hidden justify-self-center lg:flex">
+          <div className="flex items-center gap-5 xl:gap-8">
+            {navLinks
+              .filter((link) => link.id !== 'home')
+              .map((link) => {
+                const isActive = location.pathname === link.path;
+                return (
+                  <Link
+                    key={link.id}
+                    to={link.path}
+                    aria-current={isActive ? 'page' : undefined}
+                    className={cn(
+                      'group relative whitespace-nowrap px-2 py-2 text-sm font-bold tracking-tight transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005F93]/30 focus-visible:ring-offset-4',
+                      isActive ? 'text-[#005F93]' : 'text-[#4B5563] hover:text-[#005F93]'
+                    )}
+                  >
+                    {link.label}
+                    {isActive && (
+                      <motion.div
+                        layoutId="nav-underline"
+                        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-[#005F93] rounded-full"
+                      />
+                    )}
+                    {!isActive && (
+                      <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-[#005F93]/40 rounded-full group-hover:w-4 transition-all" />
+                    )}
+                  </Link>
+                );
+              })}
           </div>
         </div>
+  
 
         {/* Actions */}
         <div className="hidden lg:flex items-center justify-end gap-8 justify-self-end">

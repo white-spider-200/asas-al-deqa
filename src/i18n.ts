@@ -174,6 +174,9 @@ const resources = {
         label_message: 'Brief Requirements',
         placeholder_message: 'DESCRIBE YOUR OBJECTIVES...',
         button_send: 'Send Contact Request',
+        sending: 'Sending...',
+        success: 'Your message has been sent. We will get back to you shortly.',
+        error: 'Something went wrong. Please try again or email us directly at info@adfta.com.',
         trust: {
           privacy: 'Information Secrecy',
           response: '24h Response',
@@ -389,6 +392,9 @@ const resources = {
         label_message: 'متطلبات موجزة',
         placeholder_message: 'صف أهدافك...',
         button_send: 'إرسال طلب التواصل',
+        sending: 'جاري الإرسال...',
+        success: 'تم إرسال رسالتك بنجاح. سنعود إليك في أقرب وقت.',
+        error: 'حدث خطأ. يرجى المحاولة مرة أخرى أو مراسلتنا مباشرة على info@adfta.com.',
         trust: {
           privacy: 'سرية المعلومات',
           response: 'استجابة خلال 24 ساعة',
