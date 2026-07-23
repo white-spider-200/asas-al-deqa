@@ -8,9 +8,11 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useLocale } from "../../hooks/useLocale";
 
 export function CinematicHeroV2({ className }: { className?: string }) {
   const { t, i18n } = useTranslation();
+  const { lp } = useLocale();
   const isRtl = i18n.language === 'ar';
 
   return (
@@ -73,7 +75,7 @@ export function CinematicHeroV2({ className }: { className?: string }) {
             className="flex flex-col sm:flex-row gap-6 justify-center"
           >
             <Link 
-              to="/contact" 
+              to={lp('/contact')} 
               className="bg-[#005F93] text-white px-12 py-5 rounded-xl font-bold text-[19px] tracking-tight shadow-[0_10px_20px_rgba(0,95,147,0.22)] hover:bg-[#004B75] hover:shadow-lg transition-all flex items-center justify-center gap-3 active:scale-95 group"
             >
               {t('hero.cta_contact')}
@@ -85,7 +87,7 @@ export function CinematicHeroV2({ className }: { className?: string }) {
             </Link>
             
             <Link 
-              to="/services" 
+              to={lp('/services')} 
               className="bg-white text-[#005F93] border-2 border-[#005F93]/10 px-12 py-5 rounded-xl font-bold text-[19px] tracking-tight hover:bg-[#E8F3F9] hover:border-[#005F93] transition-all text-center active:scale-95"
             >
               {t('hero.cta_services')}

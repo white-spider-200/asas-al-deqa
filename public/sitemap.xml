@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <!-- Arabic -->
+  <url><loc>https://adfta.com/ar</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://adfta.com/ar/about</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://adfta.com/ar/services</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://adfta.com/ar/contact</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://adfta.com/ar/wealth</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://adfta.com/ar/institutional</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://adfta.com/ar/insights</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://adfta.com/ar/services/tax-compliance</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://adfta.com/ar/services/accounting</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://adfta.com/ar/services/tax-management</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://adfta.com/ar/services/tax-litigation</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://adfta.com/ar/services/documentation</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://adfta.com/ar/services/inventory</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://adfta.com/ar/services/erp</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <!-- English -->
+  <url><loc>https://adfta.com/en</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://adfta.com/en/about</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://adfta.com/en/services</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://adfta.com/en/contact</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://adfta.com/en/wealth</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://adfta.com/en/institutional</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://adfta.com/en/insights</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://adfta.com/en/services/tax-compliance</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://adfta.com/en/services/accounting</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://adfta.com/en/services/tax-management</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://adfta.com/en/services/tax-litigation</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://adfta.com/en/services/documentation</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://adfta.com/en/services/inventory</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://adfta.com/en/services/erp</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+</urlset>

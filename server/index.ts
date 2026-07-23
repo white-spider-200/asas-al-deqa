@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import express from 'express';
+import fs from 'fs';
 import nodemailer from 'nodemailer';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -269,8 +270,22 @@ app.post('/api/contact', async (req, res) => {
 if (process.env.NODE_ENV === 'production') {
   const distPath = path.join(__dirname, '../dist');
   app.use(express.static(distPath));
-  app.get('*', (_req, res) => {
-    res.sendFile(path.join(distPath, 'index.html'));
+
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+
+    const normalized = req.path.endsWith('/') && req.path.length > 1
+      ? req.path.slice(0, -1)
+      : req.path;
+    const prerendered = path.join(distPath, normalized, 'index.html');
+
+    if (fs.existsSync(prerendered)) {
+      return res.sendFile(prerendered);
+    }
+
+    return res.sendFile(path.join(distPath, 'index.html'));
   });
 }
 

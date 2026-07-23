@@ -12,17 +12,19 @@ import {
   Phone,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useLocale } from '../../hooks/useLocale';
 
 export const Footer = () => {
   const { i18n } = useTranslation();
+  const { lp } = useLocale();
   const isRtl = i18n.dir() === 'rtl';
   const currentYear = new Date().getFullYear();
 
   const navigation = [
-    { to: '/', en: 'Home', ar: 'الرئيسية' },
-    { to: '/about', en: 'About us', ar: 'من نحن' },
-    { to: '/services', en: 'Our services', ar: 'خدماتنا' },
-    { to: '/contact', en: 'Contact', ar: 'اتصل بنا' },
+    { to: lp('/'), en: 'Home', ar: 'الرئيسية' },
+    { to: lp('/about'), en: 'About us', ar: 'من نحن' },
+    { to: lp('/services'), en: 'Our services', ar: 'خدماتنا' },
+    { to: lp('/contact'), en: 'Contact', ar: 'اتصل بنا' },
   ];
 
   const contactDetails = [
@@ -65,7 +67,7 @@ export const Footer = () => {
             </h2>
           </div>
           <Link
-            to="/contact"
+            to={lp('/contact')}
             className="group inline-flex w-fit items-center gap-3 rounded-full !bg-white px-6 py-3.5 text-sm font-black !text-[#0F2433] transition-all duration-300 hover:-translate-y-1 hover:!bg-[#DDF3FF] hover:shadow-[0_12px_30px_rgba(0,95,147,0.25)]"
           >
             {isRtl ? 'احجز استشارتك' : 'Book a consultation'}
@@ -78,7 +80,7 @@ export const Footer = () => {
 
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-5">
-            <Link to="/" className="mb-6 inline-flex items-center gap-4">
+            <Link to={lp('/')} className="mb-6 inline-flex items-center gap-4">
               <span className="grid h-14 w-14 place-items-center rounded-2xl border border-white/15 bg-white/[0.07] text-lg font-black tracking-tight text-white shadow-inner">
                 ADBS
               </span>

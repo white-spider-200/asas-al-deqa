@@ -16,9 +16,11 @@ import {
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { SEO } from '../components/common/SEO';
+import { useLocale } from '../hooks/useLocale';
 
 export const Home = () => {
   const { t, i18n } = useTranslation();
+  const { lp } = useLocale();
   const isRtl = i18n.language === 'ar';
   const ArrowIcon = isRtl ? ArrowLeft : ArrowRight;
 
@@ -134,7 +136,7 @@ export const Home = () => {
                   </p>
 
                   <div className="adbs-feature-actions">
-                    <Link to="/contact" className="adbs-primary-link text-[19px]">
+                    <Link to={lp('/contact')} className="adbs-primary-link text-[19px]">
                       {t('services.cta_button')}
                       <ArrowIcon size={18} />
                     </Link>
@@ -161,7 +163,7 @@ export const Home = () => {
                   <h3>{service.title}</h3>
                   <p>{service.desc}</p>
 
-                  <Link to="/services" className="adbs-text-link">
+                  <Link to={lp('/services')} className="adbs-text-link">
                     {t('home.services.view_details')}
                     <ArrowIcon size={14} />
                   </Link>
@@ -235,7 +237,7 @@ export const Home = () => {
           <h2>{t('services.cta_title')}</h2>
           <p></p>
 
-          <Link to="/contact" className="adbs-primary-link text-[19px]">
+          <Link to={lp('/contact')} className="adbs-primary-link text-[19px]">
             {t('services.cta_button')}
             <ArrowIcon size={18} />
           </Link>

@@ -1,10 +1,11 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
+import { serviceContentEn, serviceContentAr } from './i18n/serviceContent';
 
 const resources = {
   en: {
     translation: {
+      ...serviceContentEn,
       nav: {
         home: 'Home',
         services: 'Services',
@@ -223,6 +224,7 @@ const resources = {
   },
   ar: {
     translation: {
+      ...serviceContentAr,
       nav: {
         home: 'الرئيسية',
         services: 'الخدمات',
@@ -442,10 +444,10 @@ const resources = {
 };
 
 i18n
-  .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources,
+    lng: 'ar',
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false
