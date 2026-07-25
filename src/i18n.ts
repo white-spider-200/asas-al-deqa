@@ -13,7 +13,7 @@ const resources = {
         contact: 'Contact',
         institutional: 'Institutional',
         wealth: 'Wealth',
-        insights: 'Insights'
+        blog: 'Blog'
       },
       nav_labels: {
         navigation: 'Navigation',
@@ -22,20 +22,20 @@ const resources = {
         english: 'English Version'
       },
       seo: {
-        home_title: 'Asas Al-Deqa | Tax & Accounting Consultancy Jordan',
-        home_desc: 'Professional tax compliance, accounting services, and business consulting in Jordan. Precision in detail, excellence in action since 2014.',
-        about_title: 'About Us | Asas Al-Deqa',
-        about_desc: 'Learn about Asas Al-Deqa\'s legacy of professional integrity and commitment to excellence in tax and accounting consultancy services.',
-        services_title: 'Our Services | Professional Business Solutions',
-        services_desc: 'Comprehensive tax compliance, accounting, and ERP solutions tailored for SMEs and growing businesses in Jordan.',
-        contact_title: 'Contact Us | Get in Touch',
-        contact_desc: 'Contact Asas Al-Deqa for professional tax and accounting advisory. Start your formal engagement dossier today.',
+        home_title: 'Asas Al-Deqa | Tax & Accounting Consultancy in Amman, Jordan',
+        home_desc: 'Tax compliance, accounting services, and business consulting in Amman, Jordan. Precision in detail, excellence in action since 2014.',
+        about_title: 'About Us | Asas Al-Deqa Tax & Accounting Jordan',
+        about_desc: 'Since 2014, Asas Al-Deqa has delivered professional tax and accounting consultancy for SMEs and growing businesses across Jordan.',
+        services_title: 'Tax & Accounting Services in Jordan | Asas Al-Deqa',
+        services_desc: 'Tax compliance, accounting, tax management, litigation support, and ERP solutions for SMEs in Amman and across Jordan.',
+        contact_title: 'Contact Asas Al-Deqa | Tax Consultants Amman',
+        contact_desc: 'Book a consultation with Asas Al-Deqa in Khalda, Amman. Professional tax and accounting advisory for your business.',
         wealth_title: 'Wealth Management | Strategic Financial Advisory',
         wealth_desc: 'Bespoke wealth preservation blueprints and strategic financial architecture for high-net-worth individuals.',
         institutional_title: 'Institutional Services | Corporate Advisory',
         institutional_desc: 'Complex structural advisory and institutional financial solutions for large-scale operations.',
-        insights_title: 'Insights & Perspectives | Financial Intelligence',
-        insights_desc: 'Deep dives into tax regulations, accounting trends, and strategic business intelligence from our executive team.'
+        insights_title: 'Tax & Accounting Insights Jordan | Asas Al-Deqa',
+        insights_desc: 'Practical guidance on Jordan tax regulations, accounting practices, and business compliance from Asas Al-Deqa.'
       },
       hero: {
         title: {
@@ -44,6 +44,7 @@ const resources = {
         },
         subtitle: 'Tax & Accounting Consultants.',
         description: 'Professional business solutions and consulting helping companies grow with confidence and efficiency.',
+        brand_badge: 'Asas Al-Deqa · Tax & Accounting',
         cta_contact: 'Book a Consultation Now',
         cta_services: 'Our Services'
       },
@@ -146,6 +147,26 @@ const resources = {
           financial: 'Financial Services',
           trading: 'Trading',
           telecom: 'Telecommunications'
+        },
+        strengths_title: 'How We Serve You',
+        strengths_subtitle: 'Practice strengths rooted in Jordan market expertise — not stock portraits.',
+        strengths: {
+          tax: {
+            title: 'Jordan Tax Expertise',
+            desc: 'Practical guidance on income tax, sales tax, and compliance filings aligned with local regulations.'
+          },
+          accounting: {
+            title: 'Accounting Clarity',
+            desc: 'Bookkeeping, statements, and financial reporting that give owners a clear view of the business.'
+          },
+          sme: {
+            title: 'Built for SMEs',
+            desc: 'Solutions sized for manufacturing, trading, financial services, and telecom clients across Jordan.'
+          },
+          trusted: {
+            title: 'Confidential Engagement',
+            desc: 'Professional relationships handled with integrity, deadlines respected, and client information protected.'
+          }
         }
       },
       contact: {
@@ -210,6 +231,7 @@ const resources = {
           erp_desc: 'Integrated software solutions to manage all back-office and front-office activities, automating and growing your business.'
         },
         cta_title: 'Ready to secure your business growth?',
+        cta_desc: 'Talk with our team about tax compliance, accounting, and the next step for your business in Jordan.',
         cta_button: 'Book Consultation'
       },
       footer: {
@@ -232,7 +254,7 @@ const resources = {
         contact: 'اتصل بنا',
         institutional: 'مؤسسي',
         wealth: 'ثروات',
-        insights: 'رؤى'
+        blog: 'المدونة'
       },
       nav_labels: {
         navigation: 'التنقل',
@@ -241,20 +263,20 @@ const resources = {
         english: 'النسخة الإنجليزية'
       },
       seo: {
-        home_title: 'أساس الدقة | استشارات ضريبية ومحاسبية في الأردن',
-        home_desc: 'امتثال ضريبي احترافي، خدمات محاسبية، واستشارات تجارية في الأردن. الدقة في التفاصيل والتميز في العمل منذ عام 2014.',
-        about_title: 'من نحن | أساس الدقة',
-        about_desc: 'تعرف على إرث أساس الدقة من النزاهة المهنية والالتزام بالتميز في خدمات الاستشارات الضريبية والمحاسبية.',
-        services_title: 'خدماتنا | حلول أعمال احترافية',
-        services_desc: 'حلول ضريبية ومحاسبية وحلول ERP شاملة مصممة للشركات الصغيرة والمتوسطة والشركات النامية في الأردن.',
-        contact_title: 'اتصل بنا | تواصل معنا',
-        contact_desc: 'اتصل بأساس الدقة للحصول على استشارات ضريبية ومحاسبية احترافية. ابدأ مشاوراتك الرسمية اليوم.',
+        home_title: 'أساس الدقة | استشارات ضريبية ومحاسبية في عمّان، الأردن',
+        home_desc: 'امتثال ضريبي، خدمات محاسبية، واستشارات أعمال في عمّان والأردن منذ 2014. الدقة في التفاصيل والتميز في العمل.',
+        about_title: 'من نحن | أساس الدقة للاستشارات الضريبية والمحاسبية',
+        about_desc: 'منذ 2014 نقدّم استشارات ضريبية ومحاسبية احترافية للشركات الصغيرة والمتوسطة في الأردن.',
+        services_title: 'خدمات ضريبية ومحاسبية في الأردن | أساس الدقة',
+        services_desc: 'امتثال ضريبي، محاسبة، إدارة ضرائب، تقاضي ضريبي، وحلول ERP للشركات في عمّان والأردن.',
+        contact_title: 'اتصل بأساس الدقة | مستشارون ضريبيون في عمّان',
+        contact_desc: 'احجز استشارة مع أساس الدقة في خلدا، عمّان. استشارات ضريبية ومحاسبية احترافية لأعمالك.',
         wealth_title: 'إدارة الثروات | استشارات مالية استراتيجية',
         wealth_desc: 'مخططات مخصصة للحفاظ على الثروة وهندسة مالية استراتيجية للأفراد ذوي الملاءة المالية العالية.',
         institutional_title: 'الخدمات المؤسسية | استشارات الشركات',
         institutional_desc: 'استشارات هيكلية معقدة وحلول مالية مؤسسية للعمليات واسعة النطاق.',
-        insights_title: 'رؤى ووجهات نظر | ذكاء مالي',
-        insights_desc: 'تعمق في الأنظمة الضريبية واتجاهات المحاسبة وذكاء الأعمال الاستراتيجي من فريقنا التنفيذي.'
+        insights_title: 'رؤى ضريبية ومحاسبية في الأردن | أساس الدقة',
+        insights_desc: 'إرشادات عملية حول الأنظمة الضريبية والممارسات المحاسبية والامتثال من أساس الدقة.'
       },
       hero: {
         title: {
@@ -263,6 +285,7 @@ const resources = {
         },
         subtitle: 'مستشارو الضرائب والمحاسبة.',
         description: 'حلول أعمال واستشارات احترافية تساعد الشركات على النمو بثقة وكفاءة.',
+        brand_badge: 'أساس الدقة · استشارات ضريبية ومحاسبية',
         cta_contact: 'احجز استشارة الآن',
         cta_services: 'خدماتنا'
       },
@@ -365,6 +388,26 @@ const resources = {
           financial: 'الخدمات المالية',
           trading: 'التجارة',
           telecom: 'الاتصالات'
+        },
+        strengths_title: 'كيف نخدمك',
+        strengths_subtitle: 'نقاط قوة مهنية مبنية على خبرة السوق الأردني — دون صور فريق وهمية.',
+        strengths: {
+          tax: {
+            title: 'خبرة ضريبية أردنية',
+            desc: 'إرشاد عملي في ضريبة الدخل والمبيعات والامتثال وفق الأنظمة المحلية.'
+          },
+          accounting: {
+            title: 'وضوح محاسبي',
+            desc: 'مسك دفاتر وبيانات مالية تعطي أصحاب الأعمال صورة واضحة عن أوضاعهم.'
+          },
+          sme: {
+            title: 'مصمّمون للشركات الصغيرة والمتوسطة',
+            desc: 'حلول تناسب عملاء التصنيع والتجارة والخدمات المالية والاتصالات في الأردن.'
+          },
+          trusted: {
+            title: 'تعاقد بسرية ونزاهة',
+            desc: 'علاقات مهنية قائمة على الالتزام بالمواعيد وحماية معلومات العملاء.'
+          }
         }
       },
       contact: {
@@ -429,6 +472,7 @@ const resources = {
           erp_desc: 'حلول برمجية متكاملة لإدارة جميع أنشطة المكتب الخلفي والأمامي، وأتمتة وتنمية أعمالك.'
         },
         cta_title: 'هل أنت مستعد لتأمين نمو عملك؟',
+        cta_desc: 'تحدث مع فريقنا حول الامتثال الضريبي والمحاسبة والخطوة التالية لأعمالك في الأردن.',
         cta_button: 'احجز استشارة'
       },
       footer: {

@@ -8,8 +8,6 @@ import {
   Briefcase,
   Building2,
   TrendingUp,
-  Sparkles,
-  ShieldCheck,
   LineChart,
   Landmark,
 } from 'lucide-react';
@@ -66,6 +64,9 @@ export const Home = () => {
         <div className="adbs-hero-clean-bg" />
 
         <div className="adbs-hero-clean-content">
+          <span className="adbs-hero-clean-badge">
+            {t('hero.brand_badge')}
+          </span>
 
           <h1>
             {isRtl ? (
@@ -84,8 +85,18 @@ export const Home = () => {
           <p>
             {isRtl
               ? 'منذ عام 2014، تخدم أساس الدقة مجموعة واسعة من العملاء الوطنيين والأفراد بتميّز في الاستشارات الضريبية والمحاسبية عبر الأردن.'
-              : 'Since 2014, Asas Al Diqqa has served a wide range of national clients and individuals with excellence in tax and accounting advisory across Jordan.'}
+              : 'Since 2014, Asas Al-Deqa has served a wide range of national clients and individuals with excellence in tax and accounting advisory across Jordan.'}
           </p>
+
+          <div className="adbs-hero-clean-actions">
+            <Link to={lp('/contact')} className="adbs-hero-clean-primary">
+              {t('hero.cta_contact')}
+              <ArrowIcon size={18} />
+            </Link>
+            <Link to={lp('/services')} className="adbs-hero-clean-secondary">
+              {t('hero.cta_services')}
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -114,8 +125,8 @@ export const Home = () => {
               className="adbs-feature-card"
             >
               <img
-                src="https://images.unsplash.com/photo-1556761175-4b46a572b786?q=80&w=1600&auto=format&fit=crop"
-                alt="Business Consulting"
+                src="/images/home-feature.jpg"
+                alt={isRtl ? 'استشارات أعمال' : 'Business consulting'}
               />
 
               <div className="adbs-feature-content">
@@ -183,8 +194,8 @@ export const Home = () => {
             className="adbs-image-frame"
           >
             <img
-              src="https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=1600&auto=format&fit=crop"
-              alt="Boardroom Meeting"
+              src="/images/home-why.jpg"
+              alt={isRtl ? 'اجتماع عمل' : 'Business meeting'}
             />
 
             <div className="adbs-floating-note">
@@ -235,7 +246,7 @@ export const Home = () => {
         <div className="adbs-cta-card">
 
           <h2>{t('services.cta_title')}</h2>
-          <p></p>
+          <p>{t('services.cta_desc')}</p>
 
           <Link to={lp('/contact')} className="adbs-primary-link text-[19px]">
             {t('services.cta_button')}

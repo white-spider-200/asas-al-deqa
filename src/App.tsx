@@ -15,6 +15,11 @@ import { Contact } from './pages/Contact';
 import { Wealth } from './pages/Wealth';
 import { Institutional } from './pages/Institutional';
 import { Insights } from './pages/Insights';
+import { InsightPost } from './pages/InsightPost';
+import { AdminLogin } from './pages/admin/AdminLogin';
+import { AdminBlogList } from './pages/admin/AdminBlogList';
+import { AdminBlogEditor } from './pages/admin/AdminBlogEditor';
+import { Analytics } from './components/common/Analytics';
 
 const LEGACY_REDIRECTS = [
   'about',
@@ -29,8 +34,14 @@ export default function App() {
   return (
     <HelmetProvider>
       <BrowserRouter>
+        <Analytics />
         <Routes>
           <Route path="/" element={<Navigate to="/ar" replace />} />
+          <Route path="/admin" element={<AdminLogin />} />
+          <Route path="/admin/blog" element={<AdminBlogList />} />
+          <Route path="/admin/blog/new" element={<AdminBlogEditor />} />
+          <Route path="/admin/blog/:id" element={<AdminBlogEditor />} />
+
           {LEGACY_REDIRECTS.map((segment) => (
             <Route
               key={segment}
@@ -53,6 +64,7 @@ export default function App() {
             <Route path="wealth" element={<Wealth />} />
             <Route path="institutional" element={<Institutional />} />
             <Route path="insights" element={<Insights />} />
+            <Route path="insights/:slug" element={<InsightPost />} />
             <Route path="about" element={<About />} />
             <Route path="contact" element={<Contact />} />
           </Route>

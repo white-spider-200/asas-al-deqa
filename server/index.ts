@@ -1,14 +1,26 @@
+import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import express from 'express';
 import fs from 'fs';
 import nodemailer from 'nodemailer';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { assertAdminSecretsConfigured, createAuthRouter, requireAuth } from './auth.js';
+import {
+  createAdminBlogRouter,
+  createPublicBlogRouter,
+  createUploadHandler,
+  uploadsDir,
+} from './blog.js';
+import { handleSitemap } from './sitemap.js';
+import { contactRateLimit } from './rateLimit.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 dotenv.config({ path: '.env.local' });
 dotenv.config();
+
+assertAdminSecretsConfigured();
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3001;
@@ -18,19 +30,77 @@ const SMTP_PORT = Number(process.env.SMTP_PORT) || 465;
 const SMTP_USER = process.env.SMTP_USER || 'info@adfta.com';
 const SMTP_PASS = process.env.SMTP_PASS;
 const CONTACT_TO = process.env.CONTACT_TO || 'info@adfta.com';
+const SESSION_SECRET = process.env.ADMIN_SESSION_SECRET || 'dev-insecure-session-secret';
 
-app.use(express.json({ limit: '32kb' }));
+/** Allowed browser origins for credentialed CORS (admin cookie). */
+function allowedOrigins(): Set<string> {
+  const origins = [
+    process.env.VITE_SITE_URL,
+    process.env.APP_URL,
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://localhost:3001',
+    'http://127.0.0.1:3001',
+  ]
+    .filter((v): v is string => Boolean(v && v.trim()))
+    .map((v) => v.replace(/\/$/, ''));
+  return new Set(origins);
+}
+
+const ALLOWED_ORIGINS = allowedOrigins();
+
+// Behind nginx/Cloudflare, trust one hop so rate-limit IPs are accurate.
+if (process.env.TRUST_PROXY === '1' || process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
+app.use(express.json({ limit: '1mb' }));
+app.use(cookieParser(SESSION_SECRET));
 
 app.use((_req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  res.setHeader('X-DNS-Prefetch-Control', 'off');
+  if (process.env.NODE_ENV === 'production') {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  }
   next();
 });
 
-app.options('/api/contact', (_req, res) => {
-  res.sendStatus(204);
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin && ALLOWED_ORIGINS.has(origin.replace(/\/$/, ''))) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Vary', 'Origin');
+  }
+  // Same-origin requests (no Origin) need no CORS headers.
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') {
+    if (origin && !ALLOWED_ORIGINS.has(origin.replace(/\/$/, ''))) {
+      return res.sendStatus(403);
+    }
+    return res.sendStatus(204);
+  }
+  return next();
 });
+
+app.use('/uploads', express.static(uploadsDir, {
+  // Uploads are user content — never execute as HTML/JS in the browser.
+  setHeaders(res) {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('Content-Disposition', 'inline');
+    res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
+  },
+}));
+app.use('/api/auth', createAuthRouter());
+app.use('/api/blog', createPublicBlogRouter());
+app.use('/api/admin/blog', createAdminBlogRouter());
+app.post('/api/admin/upload', requireAuth, createUploadHandler());
+app.get('/sitemap.xml', handleSitemap);
 
 function escapeHtml(text: string): string {
   return text
@@ -99,7 +169,7 @@ function emailLayout(content: string, options?: { direction?: 'ltr' | 'rtl'; pre
 </html>`;
 }
 
-app.post('/api/contact', async (req, res) => {
+app.post('/api/contact', contactRateLimit, async (req, res) => {
   if (!SMTP_PASS) {
     console.error('SMTP_PASS is not configured');
     return res.status(500).json({ error: 'Email service is not configured' });
@@ -272,7 +342,11 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(distPath));
 
   app.get('*', (req, res, next) => {
-    if (req.path.startsWith('/api')) {
+    if (
+      req.path.startsWith('/api') ||
+      req.path.startsWith('/uploads') ||
+      req.path === '/sitemap.xml'
+    ) {
       return next();
     }
 

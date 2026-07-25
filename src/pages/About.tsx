@@ -1,57 +1,33 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Shield, Building2, Cpu, Briefcase } from "lucide-react";
+import { Shield, Building2, Briefcase, Scale } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { SEO } from "../components/common/SEO";
 import { Logo } from "../components/ui/Logo";
 
-const experts = [
-  {
-    name: "Omar Tariq",
-    title: "SENIOR TAX ADVISOR",
-    image:
-      "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=1974&auto=format&fit=crop",
-    bio: "Over 15 years navigating complex regional tax structures and cross-border compliance.",
-  },
-  {
-    name: "Leila Haddad",
-    title: "LEAD ACCOUNTANT",
-    image:
-      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1976&auto=format&fit=crop",
-    bio: "Specializes in institutional audit preparation and forensic accounting for high-net-worth portfolios.",
-  },
-  {
-    name: "Tarek Al-Fayed",
-    title: "MANAGING PARTNER",
-    image:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop",
-    bio: "Former Big Four executive directing our strategic advisory and corporate restructuring practice.",
-  },
-];
-
 export const About = () => {
   const { t } = useTranslation();
 
-  const sectors = [
+  const strengths = [
     {
-      title: t('about.sectors.manufacturing'),
-      desc: t('about.history_p2'),
-      icon: Building2,
+      title: t('about.strengths.tax.title'),
+      desc: t('about.strengths.tax.desc'),
+      icon: Scale,
     },
     {
-      title: t('about.sectors.financial'),
-      desc: t('about.history_p2'),
-      icon: Shield,
-    },
-    {
-      title: t('about.sectors.trading'),
-      desc: t('about.history_p2'),
+      title: t('about.strengths.accounting.title'),
+      desc: t('about.strengths.accounting.desc'),
       icon: Briefcase,
     },
     {
-      title: t('about.sectors.telecom'),
-      desc: t('about.history_p2'),
-      icon: Cpu,
+      title: t('about.strengths.sme.title'),
+      desc: t('about.strengths.sme.desc'),
+      icon: Building2,
+    },
+    {
+      title: t('about.strengths.trusted.title'),
+      desc: t('about.strengths.trusted.desc'),
+      icon: Shield,
     },
   ];
 
@@ -68,8 +44,8 @@ export const About = () => {
           className="about-logo-showcase relative aspect-[4/3] bg-white border border-outline-variant flex items-center justify-center p-10 md:p-14 order-2 lg:order-1 overflow-hidden rounded-3xl shadow-sm"
         >
           <img 
-            src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=1000&auto=format&fit=crop" 
-            alt="Corporate Heritage" 
+            src="/images/about-office.jpg" 
+            alt="Asas Al-Deqa" 
             className="absolute inset-0 w-full h-full object-cover opacity-[0.18]"
           />
           <div className="text-center space-y-6 relative z-10">
@@ -110,8 +86,8 @@ export const About = () => {
         >
           <div className="aspect-video mb-8 rounded-2xl overflow-hidden border border-outline-variant shadow-lg group">
             <img 
-              src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1000&auto=format&fit=crop" 
-              alt="Our Vision" 
+              src="/images/about-work.jpg" 
+              alt={t('about.vision.title')} 
               className="w-full h-full object-cover grayscale opacity-90 group-hover:scale-105 transition-transform duration-700"
             />
           </div>
@@ -134,8 +110,8 @@ export const About = () => {
         >
           <div className="aspect-video mb-8 rounded-2xl overflow-hidden border border-outline-variant shadow-lg group">
             <img 
-              src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=1000&auto=format&fit=crop" 
-              alt="Our Mission" 
+              src="/images/about-mission.jpg" 
+              alt={t('about.mission.title')} 
               className="w-full h-full object-cover grayscale opacity-90 group-hover:scale-105 transition-transform duration-700"
             />
           </div>
@@ -151,8 +127,40 @@ export const About = () => {
       </div>
     </section>
 
-    {/* Compact Values Strip */}
+    {/* Practice strengths — no fictional team portraits */}
     <section className="about-values-strip px-6">
+      <div className="about-values-container">
+        <div className="about-values-head">
+          <h2>{t('about.strengths_title')}</h2>
+          <p>{t('about.strengths_subtitle')}</p>
+        </div>
+
+        <div className="about-values-grid">
+          {strengths.map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.35, delay: i * 0.05 }}
+                className="about-value-mini-card"
+              >
+                <span className="mb-3 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#E8F3F9] text-[#005F93]">
+                  <Icon size={22} strokeWidth={2.25} aria-hidden />
+                </span>
+                <h3>{item.title}</h3>
+                <p>{item.desc}</p>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+
+    {/* Compact Values Strip */}
+    <section className="about-values-strip px-6 pb-16">
       <div className="about-values-container">
         <div className="about-values-head">
           <h2>{t('about.why_title')}</h2>
@@ -198,8 +206,6 @@ export const About = () => {
         </div>
       </div>
     </section>
-
-      {/* experts and sectors omitted for brevity or simplified translation */}
     </div>
   );
 };

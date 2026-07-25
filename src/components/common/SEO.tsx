@@ -16,12 +16,23 @@ interface FAQItem {
   a: string;
 }
 
+interface ArticleMeta {
+  publishedTime?: string;
+  modifiedTime?: string;
+  tags?: string[];
+  section?: string;
+}
+
 interface SEOProps {
   titleKey?: string;
   descriptionKey?: string;
   title?: string;
   description?: string;
   faqItems?: FAQItem[];
+  ogType?: 'website' | 'article';
+  image?: string;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  articleMeta?: ArticleMeta;
 }
 
 export const SEO: React.FC<SEOProps> = ({
@@ -30,6 +41,10 @@ export const SEO: React.FC<SEOProps> = ({
   title: titleProp,
   description: descriptionProp,
   faqItems,
+  ogType = 'website',
+  image: imageProp,
+  jsonLd,
+  articleMeta,
 }) => {
   const { t, i18n } = useTranslation();
   const { pathname } = useLocation();
@@ -37,10 +52,22 @@ export const SEO: React.FC<SEOProps> = ({
   const title = titleProp ?? (titleKey ? t(titleKey) : SITE_NAME);
   const description = descriptionProp ?? (descriptionKey ? t(descriptionKey) : '');
   const canonical = absoluteUrl(pathname);
-  const image = ogImageUrl();
+  const image = imageProp
+    ? imageProp.startsWith('http')
+      ? imageProp
+      : absoluteUrl(imageProp)
+    : ogImageUrl();
   const locale = ogLocale(i18n.language);
   const isArabic = i18n.language.startsWith('ar');
   const alternateLang: Lang = isArabic ? 'en' : 'ar';
+
+  const extraJsonLd = useMemo(() => {
+    if (!jsonLd) return null;
+    if (Array.isArray(jsonLd)) {
+      return jsonLd.map((entry) => JSON.stringify(entry));
+    }
+    return [JSON.stringify(jsonLd)];
+  }, [jsonLd]);
 
   const orgJsonLd = useMemo(
     () =>
@@ -96,7 +123,7 @@ export const SEO: React.FC<SEOProps> = ({
       <link rel="alternate" hrefLang="en" href={absoluteUrl(swapLocalePath(pathname, 'en'))} />
       <link rel="alternate" hrefLang="x-default" href={absoluteUrl(swapLocalePath(pathname, 'ar'))} />
 
-      <meta property="og:type" content="website" />
+      <meta property="og:type" content={ogType} />
       <meta property="og:site_name" content={SITE_NAME} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
@@ -105,6 +132,20 @@ export const SEO: React.FC<SEOProps> = ({
       <meta property="og:locale" content={locale} />
       <meta property="og:locale:alternate" content={ogLocale(alternateLang)} />
 
+      {ogType === 'article' && articleMeta?.publishedTime && (
+        <meta property="article:published_time" content={articleMeta.publishedTime} />
+      )}
+      {ogType === 'article' && articleMeta?.modifiedTime && (
+        <meta property="article:modified_time" content={articleMeta.modifiedTime} />
+      )}
+      {ogType === 'article' && articleMeta?.section && (
+        <meta property="article:section" content={articleMeta.section} />
+      )}
+      {ogType === 'article' &&
+        articleMeta?.tags?.map((tag) => (
+          <meta key={tag} property="article:tag" content={tag} />
+        ))}
+
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
@@ -112,6 +153,11 @@ export const SEO: React.FC<SEOProps> = ({
 
       <script type="application/ld+json">{orgJsonLd}</script>
       {faqJsonLd && <script type="application/ld+json">{faqJsonLd}</script>}
+      {extraJsonLd?.map((entry, index) => (
+        <script key={`jsonld-${index}`} type="application/ld+json">
+          {entry}
+        </script>
+      ))}
     </Helmet>
   );
 };

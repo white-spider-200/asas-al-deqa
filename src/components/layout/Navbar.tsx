@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, ChevronRight, Languages, Home as HomeIcon, Info, Briefcase, MessageSquare } from 'lucide-react';
+import { Menu, X, ChevronRight, Languages, Home as HomeIcon, Info, Briefcase, MessageSquare, Newspaper } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useTranslation } from 'react-i18next';
 import { useLocale } from '../../hooks/useLocale';
@@ -13,7 +13,6 @@ export const Navbar = () => {
   const { t, i18n } = useTranslation();
   const { lp, switchLocale } = useLocale();
   const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const isRtl = i18n.language === 'ar';
 
@@ -21,6 +20,7 @@ export const Navbar = () => {
     { id: 'home', label: t('nav.home'), path: lp('/'), icon: HomeIcon },
     { id: 'about', label: t('nav.about'), path: lp('/about'), icon: Info },
     { id: 'services', label: t('nav.services'), path: lp('/services'), icon: Briefcase },
+    { id: 'blog', label: t('nav.blog'), path: lp('/insights'), icon: Newspaper },
     { id: 'contact', label: t('nav.contact'), path: lp('/contact'), icon: MessageSquare },
   ];
 
@@ -34,14 +34,6 @@ export const Navbar = () => {
   };
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : '';
     return () => {
       document.body.style.overflow = '';
@@ -50,12 +42,7 @@ export const Navbar = () => {
 
   return (
     <nav
-      className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
-        scrolled
-          ? 'bg-white/95 backdrop-blur-md py-4 shadow-sm border-b border-gray-100'
-          : 'bg-white/95 backdrop-blur-md py-4 shadow-sm border-b border-gray-100'
-      )}
+      className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md py-4 shadow-sm border-b border-gray-100"
     >
       <div className="max-w-container-max mx-auto flex items-center justify-between px-6 md:px-12 lg:grid lg:grid-cols-[minmax(180px,1fr)_auto_minmax(300px,1fr)] lg:gap-6 xl:gap-10">
         <div className="flex-shrink-0 justify-self-start">

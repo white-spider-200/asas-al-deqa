@@ -17,3 +17,7 @@ src_backup_before_*/
 package_backup_*.json
 vite.config.backup_*
 Pasted image.png
+
+/src/generated/prisma
+/uploads
+!/uploads/.gitkeep

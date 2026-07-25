@@ -24,6 +24,9 @@ export const Footer = () => {
     { to: lp('/'), en: 'Home', ar: 'الرئيسية' },
     { to: lp('/about'), en: 'About us', ar: 'من نحن' },
     { to: lp('/services'), en: 'Our services', ar: 'خدماتنا' },
+    { to: lp('/wealth'), en: 'Wealth', ar: 'ثروات' },
+    { to: lp('/institutional'), en: 'Institutional', ar: 'مؤسسي' },
+    { to: lp('/insights'), en: 'Insights', ar: 'رؤى' },
     { to: lp('/contact'), en: 'Contact', ar: 'اتصل بنا' },
   ];
 

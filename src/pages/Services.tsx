@@ -24,56 +24,48 @@ export const Services = () => {
     icon: React.ReactNode;
     title: string;
     desc: string;
-    image: string;
   }[] = [
     {
       slug: 'tax-compliance',
       icon: <BarChart3 className="text-primary" size={32} />,
       title: t('services.items.tax_compliance'),
       desc: t('services.items.tax_compliance_desc'),
-      image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=500&auto=format&fit=crop',
     },
     {
       slug: 'accounting',
       icon: <Landmark className="text-primary" size={32} />,
       title: t('services.items.accounting'),
       desc: t('services.items.accounting_desc'),
-      image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=500&auto=format&fit=crop',
     },
     {
       slug: 'tax-management',
       icon: <ShieldAlert className="text-primary" size={32} />,
       title: t('services.items.tax_management'),
       desc: t('services.items.tax_management_desc'),
-      image: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=500&auto=format&fit=crop',
     },
     {
       slug: 'tax-litigation',
       icon: <Briefcase className="text-primary" size={32} />,
       title: t('services.items.tax_litigation'),
       desc: t('services.items.tax_litigation_desc'),
-      image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=500&auto=format&fit=crop',
     },
     {
       slug: 'documentation',
       icon: <ClipboardCheck className="text-primary" size={32} />,
       title: t('services.items.documentation'),
       desc: t('services.items.documentation_desc'),
-      image: 'https://images.unsplash.com/photo-1554224154-26032ffc0d07?q=80&w=500&auto=format&fit=crop',
     },
     {
       slug: 'inventory',
       icon: <TrendingUp className="text-primary" size={32} />,
       title: t('services.items.inventory'),
       desc: t('services.items.inventory_desc'),
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=500&auto=format&fit=crop',
     },
     {
       slug: 'erp',
       icon: <Zap className="text-primary" size={32} />,
       title: t('services.items.erp'),
       desc: t('services.items.erp_desc'),
-      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=500&auto=format&fit=crop',
     },
   ];
 
@@ -84,7 +76,7 @@ export const Services = () => {
       <section className="relative min-h-[38vh] flex items-center overflow-hidden border-b border-outline-variant bg-white">
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=2069&auto=format&fit=crop"
+            src="/images/services-hero.jpg"
             alt={isRtl ? 'مكتب حديث لاستشارات ضريبية ومحاسبية' : 'Modern office for tax and accounting consultancy'}
             width={2069}
             height={1200}

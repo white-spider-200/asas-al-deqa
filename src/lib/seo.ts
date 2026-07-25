@@ -5,7 +5,7 @@ export const SITE_URL = (
 ).replace(/\/$/, '');
 
 export const SITE_NAME = 'Asas Al-Deqa';
-export const OG_IMAGE_PATH = '/og-image.png';
+export const OG_IMAGE_PATH = '/og-image.jpg';
 
 export function absoluteUrl(path = '/'): string {
   if (!path || path === '/') {
