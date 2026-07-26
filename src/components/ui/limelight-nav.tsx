@@ -98,7 +98,9 @@ export const LimelightNav = ({
           <Component
             key={id}
             {...(props as any)}
-            ref={el => (navItemRefs.current[index] = el)}
+            ref={(el: HTMLAnchorElement | HTMLDivElement | null) => {
+              navItemRefs.current[index] = el;
+            }}
             className={cn(
               "relative z-20 flex h-full cursor-pointer items-center justify-center px-4 py-3 transition-colors duration-300",
               itemContainerClassName
@@ -108,14 +110,16 @@ export const LimelightNav = ({
             id={`nav-item-${id}`}
           >
             <div 
-              ref={el => (itemContentRefs.current[index] = el)}
+              ref={(el) => {
+                itemContentRefs.current[index] = el;
+              }}
               className={cn(
                 "flex items-center gap-2 text-xs font-bold tracking-widest uppercase transition-all duration-300",
                 isActive ? activeClassName : inactiveClassName
               )}
             >
-              {icon && React.cloneElement(icon as React.ReactElement, {
-                className: cn("w-4 h-4", (icon as React.ReactElement).props.className)
+              {icon && React.cloneElement(icon as React.ReactElement<{ className?: string }>, {
+                className: cn("w-4 h-4", (icon as React.ReactElement<{ className?: string }>).props.className)
               })}
               <span>{label}</span>
             </div>
