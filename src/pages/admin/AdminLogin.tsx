@@ -74,7 +74,10 @@ export function AdminLogin() {
         >
           {submitting ? 'Signing in…' : 'Sign in'}
         </button>
-        <Link to="/ar" className="block text-center text-sm text-muted mt-4 hover:text-primary">
+        <Link to="/admin/forgot-password" className="block text-center text-sm text-muted mt-4 hover:text-primary">
+          Forgot password?
+        </Link>
+        <Link to="/ar" className="block text-center text-sm text-muted mt-2 hover:text-primary">
           Back to site
         </Link>
       </form>

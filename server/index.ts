@@ -2,7 +2,6 @@ import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import express from 'express';
 import fs from 'fs';
-import nodemailer from 'nodemailer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { assertAdminSecretsConfigured, createAuthRouter, requireAuth } from './auth.js';
@@ -14,6 +13,7 @@ import {
 } from './blog.js';
 import { handleSitemap } from './sitemap.js';
 import { contactRateLimit } from './rateLimit.js';
+import { createTransporter, emailLayout, isMailConfigured } from './mailer.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -25,10 +25,7 @@ assertAdminSecretsConfigured();
 const app = express();
 const PORT = Number(process.env.PORT) || 3001;
 
-const SMTP_HOST = process.env.SMTP_HOST || 'smtp.zoho.com';
-const SMTP_PORT = Number(process.env.SMTP_PORT) || 465;
 const SMTP_USER = process.env.SMTP_USER || 'info@adfta.com';
-const SMTP_PASS = process.env.SMTP_PASS;
 const CONTACT_TO = process.env.CONTACT_TO || 'info@adfta.com';
 const SESSION_SECRET = process.env.ADMIN_SESSION_SECRET || 'dev-insecure-session-secret';
 
@@ -115,62 +112,8 @@ function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-function emailLayout(content: string, options?: { direction?: 'ltr' | 'rtl'; preheader?: string }): string {
-  const direction = options?.direction || 'ltr';
-  const preheader = options?.preheader || '';
-
-  return `<!doctype html>
-<html lang="${direction === 'rtl' ? 'ar' : 'en'}" dir="${direction}">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="color-scheme" content="light">
-    <meta name="supported-color-schemes" content="light">
-    <title>Asas Al-Deqa</title>
-  </head>
-  <body style="margin:0;padding:0;background:#f3f6f8;color:#12212e;font-family:Arial,'Helvetica Neue',sans-serif;">
-    <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">${preheader}</div>
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;background:#f3f6f8;">
-      <tr>
-        <td align="center" style="padding:32px 16px;">
-          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;max-width:620px;background:#ffffff;border:1px solid #dce3e8;border-radius:20px;overflow:hidden;box-shadow:0 12px 36px rgba(18,33,46,0.08);">
-            <tr>
-              <td style="height:6px;background:#005f93;font-size:0;line-height:0;">&nbsp;</td>
-            </tr>
-            <tr>
-              <td style="padding:30px 36px 22px;border-bottom:1px solid #e8edf0;">
-                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
-                  <tr>
-                    <td style="vertical-align:middle;">
-                      <div style="display:inline-block;padding:10px 14px;background:#005f93;border-radius:10px;color:#ffffff;font-size:18px;font-weight:800;letter-spacing:1px;">ADFTA</div>
-                    </td>
-                    <td align="${direction === 'rtl' ? 'left' : 'right'}" style="vertical-align:middle;color:#6b7280;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;">
-                      ${direction === 'rtl' ? 'أساس الدقة' : 'Asas Al-Deqa'}
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:36px;">${content}</td>
-            </tr>
-            <tr>
-              <td align="center" style="padding:22px 36px;background:#f8fafb;border-top:1px solid #e8edf0;color:#6b7280;font-size:12px;line-height:1.6;">
-                ${direction === 'rtl'
-                  ? 'أساس الدقة للاستشارات الضريبية والمحاسبية<br>عمّان، الأردن · info@adfta.com'
-                  : 'Asas Al-Deqa Tax & Accounting Advisory<br>Amman, Jordan · info@adfta.com'}
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
-  </body>
-</html>`;
-}
-
 app.post('/api/contact', contactRateLimit, async (req, res) => {
-  if (!SMTP_PASS) {
+  if (!isMailConfigured()) {
     console.error('SMTP_PASS is not configured');
     return res.status(500).json({ error: 'Email service is not configured' });
   }
@@ -194,15 +137,7 @@ app.post('/api/contact', contactRateLimit, async (req, res) => {
     return res.status(400).json({ error: 'Invalid email address' });
   }
 
-  const transporter = nodemailer.createTransport({
-    host: SMTP_HOST,
-    port: SMTP_PORT,
-    secure: SMTP_PORT === 465,
-    auth: {
-      user: SMTP_USER,
-      pass: SMTP_PASS,
-    },
-  });
+  const transporter = createTransporter();
 
   const safeName = escapeHtml(trimmedName);
   const safeEmail = escapeHtml(trimmedEmail);

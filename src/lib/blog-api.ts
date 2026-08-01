@@ -76,6 +76,21 @@ export const blogApi = {
     }).then((res) => parseJson(res));
   },
 
+  forgotPassword(): Promise<{ ok: boolean; message: string }> {
+    return fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    }).then((res) => parseJson(res));
+  },
+
+  resetPassword(token: string, password: string): Promise<{ ok: boolean }> {
+    return fetch('/api/auth/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, password }),
+    }).then((res) => parseJson(res));
+  },
+
   adminList(): Promise<BlogPost[]> {
     return fetch('/api/admin/blog', { credentials: 'include' }).then((res) => parseJson(res));
   },
