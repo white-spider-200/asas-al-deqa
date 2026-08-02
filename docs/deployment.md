@@ -126,9 +126,24 @@ so there is no record of who published what.
 
 ## Verifying a deploy
 
+**Check the database path first.** A wrong `DATABASE_URL` produces no error at
+all — the site comes up fine and simply serves an empty blog. The startup log
+prints the resolved path:
+
+```bash
+pm2 logs asas-al-deqa --lines 20 --nostream | grep '\[db\]'
+# expected: [db] using file:/home/server/data/adfta/blog.db
+```
+
+`server/env.ts` must stay the **first** import in `server/index.ts`. ES modules
+evaluate imports in declaration order, and `db.ts` reads `DATABASE_URL` at import
+time — calling `dotenv.config()` in the body of `index.ts` is too late and
+silently falls back to `./prisma/dev.db`. `scripts/prerender.mjs` imports
+`dotenv/config` for the same reason.
+
 ```bash
 curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:3004/
-curl -s http://127.0.0.1:3004/api/blog | head -c 200
+curl -s http://127.0.0.1:3004/api/blog | head -c 200   # must NOT be []
 
 # Blog SEO tags are injected from the DB at request time (server/postMeta.ts).
 # A published post must return og:type=article and its own canonical URL:
