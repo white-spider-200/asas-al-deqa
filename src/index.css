@@ -248,3 +248,172 @@ footer a:hover {
   }
 }
 
+
+/* ================================
+   Article content
+   Shared by the public post page (InsightPost) and the admin editor so the
+   marketing team sees exactly what will be published. Replaces the `prose`
+   classes, which were no-ops (@tailwindcss/typography is not installed).
+================================ */
+
+.article-content {
+  color: var(--adbs-navy);
+  font-size: 1.0625rem;
+  line-height: 1.9;
+}
+
+.article-content > *:first-child {
+  margin-top: 0;
+}
+
+.article-content > *:last-child {
+  margin-bottom: 0;
+}
+
+.article-content p {
+  margin: 0 0 1.35em;
+}
+
+.article-content h2,
+.article-content h3,
+.article-content h4 {
+  color: var(--adbs-navy);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  scroll-margin-top: 100px;
+}
+
+.article-content h2 {
+  font-size: 1.75rem !important;
+  line-height: 1.3 !important;
+  margin: 2.2em 0 0.7em;
+}
+
+.article-content h3 {
+  font-size: 1.35rem !important;
+  line-height: 1.4 !important;
+  margin: 1.8em 0 0.6em;
+}
+
+.article-content h4 {
+  font-size: 1.125rem !important;
+  line-height: 1.5 !important;
+  margin: 1.6em 0 0.5em;
+}
+
+.article-content a {
+  color: var(--adbs-blue);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 600;
+}
+
+.article-content a:hover {
+  color: var(--adbs-blue-hover);
+}
+
+.article-content strong,
+.article-content b {
+  font-weight: 700;
+  color: var(--adbs-navy);
+}
+
+.article-content ul,
+.article-content ol {
+  margin: 0 0 1.35em;
+  padding-inline-start: 1.5em;
+}
+
+.article-content ul {
+  list-style: disc;
+}
+
+.article-content ol {
+  list-style: decimal;
+}
+
+.article-content li {
+  margin-bottom: 0.5em;
+  padding-inline-start: 0.25em;
+}
+
+.article-content li::marker {
+  color: var(--adbs-blue);
+}
+
+.article-content li > ul,
+.article-content li > ol {
+  margin: 0.5em 0 0;
+}
+
+.article-content blockquote {
+  margin: 1.8em 0;
+  padding: 1.1em 1.4em;
+  background: var(--adbs-blue-light);
+  border-inline-start: 4px solid var(--adbs-blue);
+  border-radius: 12px;
+  color: var(--adbs-navy);
+  font-size: 1.05em;
+}
+
+.article-content blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.article-content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.8em 0;
+  border-radius: 12px;
+}
+
+.article-content hr {
+  margin: 2.5em 0;
+  border: 0;
+  border-top: 1px solid var(--adbs-border);
+}
+
+.article-content code {
+  background: var(--adbs-bg);
+  border: 1px solid var(--adbs-border);
+  border-radius: 6px;
+  padding: 0.15em 0.4em;
+  font-size: 0.9em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+.article-content pre {
+  margin: 1.6em 0;
+  padding: 1.1em 1.3em;
+  background: var(--adbs-navy);
+  color: #e6edf3;
+  border-radius: 12px;
+  overflow-x: auto;
+  direction: ltr;
+  text-align: left;
+}
+
+.article-content pre code {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font-size: 0.875em;
+}
+
+/* Arabic articles read better with slightly more line height */
+.article-content[dir='rtl'] {
+  line-height: 2.05;
+}
+
+/* Editor placeholder (TipTap) */
+.article-content p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: inline-start;
+  height: 0;
+  color: var(--adbs-gray);
+  pointer-events: none;
+}

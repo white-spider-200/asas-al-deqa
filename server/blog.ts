@@ -8,7 +8,12 @@ import { prisma } from './db.js';
 import { requireAuth } from './auth.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-export const uploadsDir = path.resolve(__dirname, '../uploads');
+
+// Uploaded images are live content. In production point UPLOADS_DIR at a path
+// outside the repo (e.g. /var/lib/adfta/uploads) so redeploys don't wipe them.
+export const uploadsDir = process.env.UPLOADS_DIR?.trim()
+  ? path.resolve(process.env.UPLOADS_DIR.trim())
+  : path.resolve(__dirname, '../uploads');
 
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });

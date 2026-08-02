@@ -13,8 +13,10 @@ import {
   Link2,
   List,
   ListOrdered,
+  Minus,
   Quote,
   Redo2,
+  Strikethrough,
   Undo2,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
@@ -26,7 +28,46 @@ type RichTextEditorProps = {
   placeholder?: string;
   dir?: 'rtl' | 'ltr';
   className?: string;
+  /** Language of the toolbar tooltips, not of the content. */
+  lang?: 'ar' | 'en';
 };
+
+const LABELS = {
+  en: {
+    bold: 'Bold',
+    italic: 'Italic',
+    strike: 'Strikethrough',
+    h2: 'Heading',
+    h3: 'Subheading',
+    bullet: 'Bullet list',
+    ordered: 'Numbered list',
+    quote: 'Quote',
+    rule: 'Divider',
+    link: 'Link',
+    image: 'Insert image',
+    undo: 'Undo',
+    redo: 'Redo',
+    linkPrompt: 'Link URL',
+    uploadFailed: 'Upload failed',
+  },
+  ar: {
+    bold: 'عريض',
+    italic: 'مائل',
+    strike: 'يتوسطه خط',
+    h2: 'عنوان رئيسي',
+    h3: 'عنوان فرعي',
+    bullet: 'قائمة نقطية',
+    ordered: 'قائمة مرقمة',
+    quote: 'اقتباس',
+    rule: 'فاصل',
+    link: 'رابط',
+    image: 'إدراج صورة',
+    undo: 'تراجع',
+    redo: 'إعادة',
+    linkPrompt: 'رابط URL',
+    uploadFailed: 'فشل رفع الصورة',
+  },
+} as const;
 
 function ToolbarButton({
   onClick,
@@ -62,7 +103,9 @@ export function RichTextEditor({
   placeholder = 'Write your article…',
   dir = 'ltr',
   className,
+  lang = 'en',
 }: RichTextEditorProps) {
+  const t = LABELS[lang];
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -83,8 +126,9 @@ export function RichTextEditor({
     },
     editorProps: {
       attributes: {
-        class:
-          'prose prose-slate max-w-none min-h-[280px] px-4 py-3 focus:outline-none text-on-surface',
+        // article-content is the same stylesheet the live post page uses, so what
+        // you type here is what gets published.
+        class: 'article-content min-h-[320px] px-6 py-5 focus:outline-none',
         dir,
       },
     },
@@ -105,7 +149,7 @@ export function RichTextEditor({
 
   const setLink = () => {
     const previous = editor.getAttributes('link').href as string | undefined;
-    const url = window.prompt('URL', previous || 'https://');
+    const url = window.prompt(t.linkPrompt, previous || 'https://');
     if (url === null) return;
     if (url === '') {
       editor.chain().focus().extendMarkRange('link').unsetLink().run();
@@ -125,7 +169,7 @@ export function RichTextEditor({
         const { url } = await blogApi.upload(file);
         editor.chain().focus().setImage({ src: url }).run();
       } catch (err) {
-        window.alert(err instanceof Error ? err.message : 'Upload failed');
+        window.alert(err instanceof Error ? err.message : t.uploadFailed);
       }
     };
     input.click();
@@ -133,67 +177,82 @@ export function RichTextEditor({
 
   return (
     <div className={cn('overflow-hidden rounded-xl border border-outline-variant bg-white', className)}>
-      <div className="flex flex-wrap items-center gap-1 border-b border-outline-variant bg-background px-2 py-2">
+      <div
+        className="sticky top-[73px] z-[5] flex flex-wrap items-center gap-1 border-b border-outline-variant bg-background px-2 py-2"
+        dir={dir}
+      >
         <ToolbarButton
-          title="Bold"
+          title={t.bold}
           active={editor.isActive('bold')}
           onClick={() => editor.chain().focus().toggleBold().run()}
         >
           <Bold size={16} />
         </ToolbarButton>
         <ToolbarButton
-          title="Italic"
+          title={t.italic}
           active={editor.isActive('italic')}
           onClick={() => editor.chain().focus().toggleItalic().run()}
         >
           <Italic size={16} />
         </ToolbarButton>
         <ToolbarButton
-          title="Heading 2"
+          title={t.strike}
+          active={editor.isActive('strike')}
+          onClick={() => editor.chain().focus().toggleStrike().run()}
+        >
+          <Strikethrough size={16} />
+        </ToolbarButton>
+        <div className="mx-1 h-5 w-px bg-outline-variant" />
+        <ToolbarButton
+          title={t.h2}
           active={editor.isActive('heading', { level: 2 })}
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         >
           <Heading2 size={16} />
         </ToolbarButton>
         <ToolbarButton
-          title="Heading 3"
+          title={t.h3}
           active={editor.isActive('heading', { level: 3 })}
           onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
         >
           <Heading3 size={16} />
         </ToolbarButton>
         <ToolbarButton
-          title="Bullet list"
+          title={t.bullet}
           active={editor.isActive('bulletList')}
           onClick={() => editor.chain().focus().toggleBulletList().run()}
         >
           <List size={16} />
         </ToolbarButton>
         <ToolbarButton
-          title="Ordered list"
+          title={t.ordered}
           active={editor.isActive('orderedList')}
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
         >
           <ListOrdered size={16} />
         </ToolbarButton>
         <ToolbarButton
-          title="Quote"
+          title={t.quote}
           active={editor.isActive('blockquote')}
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
         >
           <Quote size={16} />
         </ToolbarButton>
-        <ToolbarButton title="Link" active={editor.isActive('link')} onClick={setLink}>
+        <ToolbarButton title={t.rule} onClick={() => editor.chain().focus().setHorizontalRule().run()}>
+          <Minus size={16} />
+        </ToolbarButton>
+        <div className="mx-1 h-5 w-px bg-outline-variant" />
+        <ToolbarButton title={t.link} active={editor.isActive('link')} onClick={setLink}>
           <Link2 size={16} />
         </ToolbarButton>
-        <ToolbarButton title="Image" onClick={addImage}>
+        <ToolbarButton title={t.image} onClick={addImage}>
           <ImageIcon size={16} />
         </ToolbarButton>
         <div className="mx-1 h-5 w-px bg-outline-variant" />
-        <ToolbarButton title="Undo" onClick={() => editor.chain().focus().undo().run()}>
+        <ToolbarButton title={t.undo} onClick={() => editor.chain().focus().undo().run()}>
           <Undo2 size={16} />
         </ToolbarButton>
-        <ToolbarButton title="Redo" onClick={() => editor.chain().focus().redo().run()}>
+        <ToolbarButton title={t.redo} onClick={() => editor.chain().focus().redo().run()}>
           <Redo2 size={16} />
         </ToolbarButton>
       </div>

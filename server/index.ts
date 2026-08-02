@@ -11,6 +11,7 @@ import {
   createUploadHandler,
   uploadsDir,
 } from './blog.js';
+import { serveBlogPostHtml } from './postMeta.js';
 import { handleSitemap } from './sitemap.js';
 import { contactRateLimit } from './rateLimit.js';
 import { createTransporter, emailLayout, isMailConfigured } from './mailer.js';
@@ -274,15 +275,26 @@ app.post('/api/contact', contactRateLimit, async (req, res) => {
 
 if (process.env.NODE_ENV === 'production') {
   const distPath = path.join(__dirname, '../dist');
-  app.use(express.static(distPath));
+  // redirect:false so directory requests fall through to the prerender-aware
+  // handler below instead of 301-ing to a trailing slash (sitemap URLs have none).
+  app.use(express.static(distPath, { redirect: false }));
 
-  app.get('*', (req, res, next) => {
+  const indexHtmlPath = path.join(distPath, 'index.html');
+
+  app.get('*', async (req, res, next) => {
     if (
       req.path.startsWith('/api') ||
       req.path.startsWith('/uploads') ||
       req.path === '/sitemap.xml'
     ) {
       return next();
+    }
+
+    // Blog posts get their SEO tags injected from the database at request time,
+    // so a newly published article is indexable without rebuilding the site.
+    // Must run before the prerender lookup, which may hold a stale copy.
+    if (await serveBlogPostHtml(req, res, indexHtmlPath)) {
+      return undefined;
     }
 
     const normalized = req.path.endsWith('/') && req.path.length > 1

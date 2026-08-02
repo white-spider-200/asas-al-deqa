@@ -21,3 +21,9 @@ Pasted image.png
 /src/generated/prisma
 /uploads
 !/uploads/.gitkeep
+
+# SQLite database is live content — never commit it, or deploys overwrite posts
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
