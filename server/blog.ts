@@ -45,8 +45,38 @@ const upload = multer({
 const ALLOWED_TAGS = new Set([
   'p', 'br', 'strong', 'b', 'em', 'i', 'u', 's', 'blockquote',
   'ul', 'ol', 'li', 'h2', 'h3', 'h4', 'a', 'img', 'span',
-  'code', 'pre', 'hr',
+  'code', 'pre', 'hr', 'mark',
 ]);
+
+/**
+ * A colour literal we are willing to echo back into a style attribute.
+ * Deliberately narrow: no url(), no var(), no expression(), no arbitrary CSS.
+ */
+const SAFE_COLOUR = /^(#[0-9a-f]{3,8}|rgba?\([\d\s.,%/]+\)|inherit|transparent|currentcolor)$/i;
+
+/**
+ * Extracts a single safe colour declaration from a style attribute.
+ * The editor's colour picker and highlighter are the only things that set these
+ * (see src/components/blog/RichTextEditor.tsx), so anything else is dropped.
+ */
+function safeColourStyle(attrs: string, properties: string[]): string {
+  const styleMatch = attrs.match(/\sstyle\s*=\s*(['"])(.*?)\1/i);
+  if (!styleMatch) return '';
+
+  const declarations = styleMatch[2].split(';');
+  const kept: string[] = [];
+  for (const declaration of declarations) {
+    const [rawProp, ...rest] = declaration.split(':');
+    const prop = rawProp?.trim().toLowerCase();
+    const value = rest.join(':').trim();
+    if (!prop || !value) continue;
+    if (!properties.includes(prop)) continue;
+    if (!SAFE_COLOUR.test(value)) continue;
+    kept.push(`${prop}: ${value}`);
+  }
+
+  return kept.length ? ` style="${kept.join('; ').replace(/"/g, '&quot;')}"` : '';
+}
 
 /** Strip scripts/styles and non-whitelisted tags; keep safe attrs on a/img. */
 export function sanitizeHtml(html: string): string {
@@ -81,6 +111,16 @@ export function sanitizeHtml(html: string): string {
       const classMatch = attrs.match(/\sclass\s*=\s*(['"])(.*?)\1/i);
       const cls = classMatch?.[2] ? ` class="${classMatch[2].replace(/"/g, '&quot;')}"` : '';
       return `<img src="${src.replace(/"/g, '&quot;')}" alt="${alt}"${cls}>`;
+    }
+
+    // Text colour from the editor's palette.
+    if (tag === 'span') {
+      return `<span${safeColourStyle(attrs, ['color'])}>`;
+    }
+
+    // Highlight. TipTap emits data-color alongside the inline style.
+    if (tag === 'mark') {
+      return `<mark${safeColourStyle(attrs, ['background-color', 'color'])}>`;
     }
 
     return `<${tag}>`;

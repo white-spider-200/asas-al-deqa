@@ -417,3 +417,10 @@ footer a:hover {
   color: var(--adbs-gray);
   pointer-events: none;
 }
+
+.article-content mark {
+  padding: 0.1em 0.25em;
+  border-radius: 4px;
+  background-color: var(--adbs-blue-light);
+  color: inherit;
+}
