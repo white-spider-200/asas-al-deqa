@@ -1,5 +1,6 @@
+// MUST be first: loads .env before db.ts and postMeta.ts read process.env.
+import './env.js';
 import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv';
 import express from 'express';
 import fs from 'fs';
 import path from 'path';
@@ -17,9 +18,6 @@ import { contactRateLimit } from './rateLimit.js';
 import { createTransporter, emailLayout, isMailConfigured } from './mailer.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-dotenv.config({ path: '.env.local' });
-dotenv.config();
 
 assertAdminSecretsConfigured();
 

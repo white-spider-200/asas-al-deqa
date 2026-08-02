@@ -30,6 +30,10 @@ if (databaseUrl.startsWith('file:')) {
   }
 }
 
+// Log the resolved path at startup. A silent fallback to the wrong file empties
+// the blog without any error, so this must always be visible in the pm2 logs.
+console.log(`[db] using ${databaseUrl}`);
+
 const adapter = new PrismaBetterSqlite3({ url: databaseUrl });
 
 export const prisma = new PrismaClient({ adapter });

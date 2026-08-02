@@ -2,6 +2,9 @@ import { createServer } from 'node:http';
 import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+// Load .env first — without it DATABASE_URL is unset and this script silently
+// falls back to ./prisma/dev.db, prerendering from the wrong database.
+import 'dotenv/config';
 import { chromium } from 'playwright';
 import express from 'express';
 import Database from 'better-sqlite3';
