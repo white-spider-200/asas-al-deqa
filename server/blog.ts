@@ -146,11 +146,25 @@ export function sanitizeHtml(html: string): string {
   return out;
 }
 
+/** Arabic diacritics (tashkeel) and tatweel — invisible, but they break slug matching. */
+const ARABIC_MARKS = /[ً-ٰٟـ]/g;
+
+/**
+ * Builds a URL slug, keeping Unicode letters so an Arabic title produces a
+ * readable Arabic slug instead of a meaningless `post-<timestamp>`.
+ *
+ * Arabic slugs are valid URLs and good for Arabic search; they are
+ * percent-encoded wherever they are emitted (see postUrl in postMeta.ts, which
+ * canonical, hreflang and the sitemap all route through).
+ */
 function slugify(input: string): string {
   return input
+    .normalize('NFKC')
     .toLowerCase()
     .trim()
-    .replace(/[^\w\s-]/g, '')
+    .replace(ARABIC_MARKS, '')
+    // Keep letters and numbers in any script; drop punctuation and symbols.
+    .replace(/[^\p{L}\p{N}\s-]/gu, '')
     .replace(/[\s_]+/g, '-')
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '')

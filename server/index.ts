@@ -13,6 +13,7 @@ import {
   uploadsDir,
 } from './blog.js';
 import { serveBlogPostHtml } from './postMeta.js';
+import { isKnownAppPath } from './routes.js';
 import { handleSitemap } from './sitemap.js';
 import { contactRateLimit } from './rateLimit.js';
 import { createTransporter, emailLayout, isMailConfigured } from './mailer.js';
@@ -304,7 +305,13 @@ if (process.env.NODE_ENV === 'production') {
       return res.sendFile(prerendered);
     }
 
-    return res.sendFile(path.join(distPath, 'index.html'));
+    // Unknown path: still serve the shell so the visitor gets the app's
+    // not-found screen, but with a 404 so crawlers don't index every typo.
+    if (!isKnownAppPath(req.path)) {
+      return res.status(404).sendFile(indexHtmlPath);
+    }
+
+    return res.sendFile(indexHtmlPath);
   });
 }
 
