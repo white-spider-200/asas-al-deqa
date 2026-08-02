@@ -91,15 +91,39 @@ this host has no passwordless sudo.)
 is now untracked and `*.db` is gitignored, but the real protection is the path
 above.
 
-The stale `prisma/dev.db` is no longer read by anything and can be deleted once
-you are satisfied the migration held.
+The old `prisma/dev.db` has been deleted. Do not recreate it: if `DATABASE_URL`
+is ever wrong, an empty file at that path would let the site come up serving no
+posts instead of failing visibly.
 
-### Back up before risky work
+### Backups
+
+A cron job runs nightly at 03:15:
+
+```
+15 3 * * * /home/server/Desktop/project/asas-al-deqa/scripts/backup-data.sh \
+             >> /home/server/backups/adfta/backup.log 2>&1
+```
+
+Snapshots land in `/home/server/backups/adfta/<timestamp>/` as `blog.db` plus
+`uploads.tar.gz`, and are kept for 30 days. The script uses `sqlite3 .backup`
+rather than `cp` — the site is live, and a plain copy can capture a torn file
+mid-write. It counts the rows in the copy afterwards and fails loudly if the
+source database is missing.
+
+Run it by hand before risky work:
 
 ```bash
-TS=$(date +%Y%m%d-%H%M%S); mkdir -p ~/backups/adfta-$TS
-cp /home/server/data/adfta/blog.db ~/backups/adfta-$TS/
-cp -r /home/server/data/adfta/uploads ~/backups/adfta-$TS/
+./scripts/backup-data.sh
+tail /home/server/backups/adfta/backup.log
+```
+
+Restore is a straight copy back:
+
+```bash
+pm2 stop asas-al-deqa
+cp /home/server/backups/adfta/<stamp>/blog.db /home/server/data/adfta/blog.db
+tar -xzf /home/server/backups/adfta/<stamp>/uploads.tar.gz -C /home/server/data/adfta
+pm2 start asas-al-deqa
 ```
 
 ## Known production issues
