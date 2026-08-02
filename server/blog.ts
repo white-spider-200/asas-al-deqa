@@ -49,29 +49,41 @@ const ALLOWED_TAGS = new Set([
 ]);
 
 /**
- * A colour literal we are willing to echo back into a style attribute.
+ * Values we are willing to echo back into a style attribute.
  * Deliberately narrow: no url(), no var(), no expression(), no arbitrary CSS.
  */
 const SAFE_COLOUR = /^(#[0-9a-f]{3,8}|rgba?\([\d\s.,%/]+\)|inherit|transparent|currentcolor)$/i;
+const SAFE_ALIGN = /^(left|right|center|justify)$/i;
+
+/** Property allowlists, one per tag family the editor can produce. */
+const COLOUR_ONLY: Record<string, RegExp> = { color: SAFE_COLOUR };
+const HIGHLIGHT_STYLE: Record<string, RegExp> = {
+  'background-color': SAFE_COLOUR,
+  color: SAFE_COLOUR,
+};
+const ALIGN_ONLY: Record<string, RegExp> = { 'text-align': SAFE_ALIGN };
+
+/** Block tags the alignment control may write a style onto. */
+const ALIGNABLE_TAGS = new Set(['p', 'h2', 'h3', 'h4']);
 
 /**
- * Extracts a single safe colour declaration from a style attribute.
- * The editor's colour picker and highlighter are the only things that set these
- * (see src/components/blog/RichTextEditor.tsx), so anything else is dropped.
+ * Rebuilds a style attribute containing only the declarations we recognise,
+ * each validated against its own pattern. The editor's colour picker,
+ * highlighter and alignment buttons are the only things that set these
+ * (see src/components/blog/editor/), so everything else is dropped.
  */
-function safeColourStyle(attrs: string, properties: string[]): string {
+function safeStyle(attrs: string, allowed: Record<string, RegExp>): string {
   const styleMatch = attrs.match(/\sstyle\s*=\s*(['"])(.*?)\1/i);
   if (!styleMatch) return '';
 
-  const declarations = styleMatch[2].split(';');
   const kept: string[] = [];
-  for (const declaration of declarations) {
+  for (const declaration of styleMatch[2].split(';')) {
     const [rawProp, ...rest] = declaration.split(':');
     const prop = rawProp?.trim().toLowerCase();
     const value = rest.join(':').trim();
     if (!prop || !value) continue;
-    if (!properties.includes(prop)) continue;
-    if (!SAFE_COLOUR.test(value)) continue;
+    const pattern = allowed[prop];
+    if (!pattern || !pattern.test(value)) continue;
     kept.push(`${prop}: ${value}`);
   }
 
@@ -115,12 +127,17 @@ export function sanitizeHtml(html: string): string {
 
     // Text colour from the editor's palette.
     if (tag === 'span') {
-      return `<span${safeColourStyle(attrs, ['color'])}>`;
+      return `<span${safeStyle(attrs, COLOUR_ONLY)}>`;
     }
 
     // Highlight. TipTap emits data-color alongside the inline style.
     if (tag === 'mark') {
-      return `<mark${safeColourStyle(attrs, ['background-color', 'color'])}>`;
+      return `<mark${safeStyle(attrs, HIGHLIGHT_STYLE)}>`;
+    }
+
+    // Alignment is the only style the editor writes onto a block element.
+    if (ALIGNABLE_TAGS.has(tag)) {
+      return `<${tag}${safeStyle(attrs, ALIGN_ONLY)}>`;
     }
 
     return `<${tag}>`;

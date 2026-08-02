@@ -126,7 +126,12 @@ export function AdminBlogEditor() {
   const uiDir = uiLang === 'ar' ? 'rtl' : 'ltr';
 
   return (
-    <div className="min-h-screen bg-background text-on-surface pb-20" dir={uiDir}>
+    <div
+      className="min-h-screen bg-background text-on-surface pb-20"
+      dir={uiDir}
+      // Height of the sticky header below. The editor toolbar sticks beneath it.
+      style={{ ['--editor-toolbar-offset' as string]: '73px' }}
+    >
       <header className="border-b border-outline-variant bg-white sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-3">
           <div>
