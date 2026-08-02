@@ -34,6 +34,14 @@ function absoluteUrl(path: string): string {
   return `${SITE_URL}${path.startsWith('/') ? path : `/${path}`}`;
 }
 
+/**
+ * Percent-encodes the slug. Arabic slugs are valid but must not appear raw in
+ * canonical / hreflang / og:url.
+ */
+export function postUrl(lang: 'ar' | 'en', slug: string): string {
+  return `${SITE_URL}/${lang}/insights/${encodeURIComponent(slug)}`;
+}
+
 /** Plain-text fallback description when the editor left the excerpt empty. */
 function textFromHtml(html: string, limit = 160): string {
   const text = html
@@ -55,12 +63,36 @@ type PostMeta = {
   modifiedTime: string;
   tag: string | null;
   slug: string;
+  /** Languages this post actually has a body for. */
+  availableLangs: ('ar' | 'en')[];
 };
 
-async function loadPostMeta(lang: 'ar' | 'en', slug: string): Promise<PostMeta | null> {
-  const post = await prisma.blogPost.findFirst({ where: { slug, published: true } });
-  if (!post) return null;
+/** A slug is only a real page in a language once that language has content. */
+export function availableLangsFor(post: { contentAr: string; contentEn: string }): ('ar' | 'en')[] {
+  const langs: ('ar' | 'en')[] = [];
+  if (post.contentAr?.trim()) langs.push('ar');
+  if (post.contentEn?.trim()) langs.push('en');
+  return langs;
+}
 
+function buildMeta(
+  lang: 'ar' | 'en',
+  post: {
+    slug: string;
+    titleAr: string;
+    titleEn: string;
+    excerptAr: string;
+    excerptEn: string;
+    contentAr: string;
+    contentEn: string;
+    coverImage: string | null;
+    tagAr: string | null;
+    tagEn: string | null;
+    publishedAt: Date | null;
+    createdAt: Date;
+    updatedAt: Date;
+  },
+): PostMeta {
   const isArabic = lang === 'ar';
   const title = (isArabic ? post.titleAr : post.titleEn) || post.titleEn || post.titleAr;
   const excerpt = (isArabic ? post.excerptAr : post.excerptEn) || '';
@@ -71,12 +103,13 @@ async function loadPostMeta(lang: 'ar' | 'en', slug: string): Promise<PostMeta |
     title: `${title} | ${siteName}`,
     description: excerpt || textFromHtml(content) || title,
     image: absoluteUrl(post.coverImage || OG_IMAGE),
-    canonical: `${SITE_URL}/${lang}/insights/${post.slug}`,
+    canonical: postUrl(lang, post.slug),
     lang,
     publishedTime: new Date(post.publishedAt || post.createdAt).toISOString(),
     modifiedTime: new Date(post.updatedAt).toISOString(),
     tag: isArabic ? post.tagAr : post.tagEn,
     slug: post.slug,
+    availableLangs: availableLangsFor(post),
   };
 }
 
@@ -123,13 +156,23 @@ function buildHead(meta: PostMeta): string {
     ],
   };
 
+  // Only advertise a language once it has a body — pointing hreflang at an empty
+  // translation tells Google a page exists that has nothing on it.
+  const alternates = meta.availableLangs.map(
+    (l) => `<link rel="alternate" hreflang="${l}" href="${escapeAttr(postUrl(l, meta.slug))}">`,
+  );
+  const xDefault = meta.availableLangs.includes('ar') ? 'ar' : meta.availableLangs[0];
+  if (xDefault) {
+    alternates.push(
+      `<link rel="alternate" hreflang="x-default" href="${escapeAttr(postUrl(xDefault, meta.slug))}">`,
+    );
+  }
+
   return [
     `<title>${escapeAttr(meta.title)}</title>`,
     `<meta name="description" content="${escapeAttr(meta.description)}">`,
     `<link rel="canonical" href="${escapeAttr(meta.canonical)}">`,
-    `<link rel="alternate" hreflang="ar" href="${escapeAttr(`${SITE_URL}/ar/insights/${meta.slug}`)}">`,
-    `<link rel="alternate" hreflang="en" href="${escapeAttr(`${SITE_URL}/en/insights/${meta.slug}`)}">`,
-    `<link rel="alternate" hreflang="x-default" href="${escapeAttr(`${SITE_URL}/ar/insights/${meta.slug}`)}">`,
+    ...alternates,
     `<meta property="og:type" content="article">`,
     `<meta property="og:site_name" content="${escapeAttr(siteName)}">`,
     `<meta property="og:title" content="${escapeAttr(meta.title)}">`,
@@ -178,8 +221,34 @@ export async function serveBlogPostHtml(
   if (!match) return false;
 
   try {
-    const meta = await loadPostMeta(match.lang, match.slug);
-    if (!meta) return false; // Unpublished/unknown → normal SPA 404 handling.
+    const post = await prisma.blogPost.findFirst({
+      where: { slug: match.slug, published: true },
+    });
+
+    // Unknown or unpublished slug. Serve the SPA shell so the visitor sees the
+    // app's "not found" screen, but with a real 404 so search engines do not
+    // index every junk URL as a valid page.
+    if (!post) {
+      const shell = await fs.promises.readFile(indexHtmlPath, 'utf8');
+      res.status(404).type('html').send(shell);
+      return true;
+    }
+
+    const meta = buildMeta(match.lang, post);
+
+    // The post exists but not in this language yet. Send the reader to the
+    // language that does have a body rather than rendering a blank article.
+    // 302, not 301: the translation is expected to arrive later.
+    if (!meta.availableLangs.includes(match.lang)) {
+      const fallback = meta.availableLangs[0];
+      if (!fallback) {
+        const shell = await fs.promises.readFile(indexHtmlPath, 'utf8');
+        res.status(404).type('html').send(shell);
+        return true;
+      }
+      res.redirect(302, `/${fallback}/insights/${encodeURIComponent(post.slug)}`);
+      return true;
+    }
 
     const template = await fs.promises.readFile(indexHtmlPath, 'utf8');
     let html = stripStaticMeta(template);

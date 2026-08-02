@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import { prisma } from './db.js';
+import { availableLangsFor, postUrl } from './postMeta.js';
 
 const SITE_URL = (process.env.VITE_SITE_URL || 'https://adfta.com').replace(/\/$/, '');
 
@@ -75,7 +76,13 @@ export async function handleSitemap(_req: Request, res: Response) {
   try {
     const posts = await prisma.blogPost.findMany({
       where: { published: true },
-      select: { slug: true, publishedAt: true, updatedAt: true },
+      select: {
+        slug: true,
+        publishedAt: true,
+        updatedAt: true,
+        contentAr: true,
+        contentEn: true,
+      },
       orderBy: { publishedAt: 'desc' },
     });
 
@@ -107,15 +114,28 @@ export async function handleSitemap(_req: Request, res: Response) {
       }
 
       for (const post of posts) {
-        const pathAfterLang = `/insights/${post.slug}`;
+        // A post only has a page in a language once that language has a body.
+        // Listing an empty translation sends Google to a blank article.
+        const langs = availableLangsFor(post);
+        if (!langs.includes(lang)) continue;
+
         const lastmod = toIsoDate(post.updatedAt) || toIsoDate(post.publishedAt);
+        const alternates: { lang: string; href: string }[] = langs.map((l) => ({
+          lang: l,
+          href: postUrl(l, post.slug),
+        }));
+        alternates.push({
+          lang: 'x-default',
+          href: postUrl(langs.includes('ar') ? 'ar' : langs[0], post.slug),
+        });
+
         urls.push(
           urlEntry({
-            loc: `${SITE_URL}/${lang}${pathAfterLang}`,
+            loc: postUrl(lang, post.slug),
             lastmod,
             changefreq: 'weekly',
             priority: '0.7',
-            alternates: bilingualAlternates(pathAfterLang),
+            alternates,
           }),
         );
       }
