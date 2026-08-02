@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { Eye, Pencil } from 'lucide-react';
 import { PostPreview } from '../../components/blog/PostPreview';
@@ -34,20 +34,29 @@ export function AdminBlogEditor() {
   const [error, setError] = useState<string | null>(null);
   const [langTab, setLangTab] = useState<'ar' | 'en'>('en');
   const [mode, setMode] = useState<'edit' | 'preview'>('edit');
-  const headerRef = useRef<HTMLElement>(null);
   const [headerHeight, setHeaderHeight] = useState(73);
+  const headerObserver = useRef<ResizeObserver | null>(null);
 
   // The header wraps to two rows on narrow screens, so its height is not a
-  // constant. Track it and hand it to the editor toolbar's sticky offset.
-  useEffect(() => {
-    const el = headerRef.current;
+  // constant. Measure it and hand it to the editor toolbar's sticky offset.
+  //
+  // A callback ref, not useRef + useEffect: `authed` becomes true while
+  // `checking` is still true, so the header is not mounted yet on that render,
+  // and by the time it mounts no dependency has changed for an effect to re-run.
+  // A callback ref fires exactly when the node attaches.
+  const headerRef = useCallback((el: HTMLElement | null) => {
+    headerObserver.current?.disconnect();
     if (!el) return;
-    const observer = new ResizeObserver(([entry]) => {
-      setHeaderHeight(Math.round(entry.contentRect.height) + 1); // +1 for the border
-    });
+    // getBoundingClientRect, not contentRect — the header has a bottom border
+    // and the toolbar must sit below it, not overlapping.
+    const measure = () => setHeaderHeight(Math.round(el.getBoundingClientRect().height));
+    measure();
+    const observer = new ResizeObserver(measure);
     observer.observe(el);
-    return () => observer.disconnect();
-  }, [authed]);
+    headerObserver.current = observer;
+  }, []);
+
+  useEffect(() => () => headerObserver.current?.disconnect(), []);
 
   useEffect(() => {
     blogApi
