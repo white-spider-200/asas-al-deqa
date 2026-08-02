@@ -11,7 +11,7 @@ type EditorStatsProps = {
 export function EditorStats({ words, minutes, t, dir }: EditorStatsProps) {
   return (
     <div
-      className="flex flex-wrap items-center justify-between gap-2 border-t border-outline-variant bg-background px-4 py-2 text-xs text-muted"
+      className="flex flex-wrap items-center justify-between gap-2 rounded-b-xl border-t border-outline-variant bg-background px-4 py-2 text-xs text-muted"
       dir={dir}
     >
       <span>{t.hint}</span>

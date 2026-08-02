@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { Eye, Pencil } from 'lucide-react';
 import { PostPreview } from '../../components/blog/PostPreview';
@@ -34,6 +34,20 @@ export function AdminBlogEditor() {
   const [error, setError] = useState<string | null>(null);
   const [langTab, setLangTab] = useState<'ar' | 'en'>('en');
   const [mode, setMode] = useState<'edit' | 'preview'>('edit');
+  const headerRef = useRef<HTMLElement>(null);
+  const [headerHeight, setHeaderHeight] = useState(73);
+
+  // The header wraps to two rows on narrow screens, so its height is not a
+  // constant. Track it and hand it to the editor toolbar's sticky offset.
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(([entry]) => {
+      setHeaderHeight(Math.round(entry.contentRect.height) + 1); // +1 for the border
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [authed]);
 
   useEffect(() => {
     blogApi
@@ -129,10 +143,11 @@ export function AdminBlogEditor() {
     <div
       className="min-h-screen bg-background text-on-surface pb-20"
       dir={uiDir}
-      // Height of the sticky header below. The editor toolbar sticks beneath it.
-      style={{ ['--editor-toolbar-offset' as string]: '73px' }}
+      // Measured from the header below, so the editor toolbar parks flush
+      // against it and no text slides through the gap.
+      style={{ ['--editor-toolbar-offset' as string]: `${headerHeight}px` }}
     >
-      <header className="border-b border-outline-variant bg-white sticky top-0 z-10">
+      <header ref={headerRef} className="border-b border-outline-variant bg-white sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-3">
           <div>
             <Link to="/admin/blog" className="text-sm text-primary font-bold hover:underline">

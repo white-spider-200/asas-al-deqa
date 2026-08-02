@@ -53,9 +53,10 @@ const ALIGN_LABEL_KEYS = {
 export function Toolbar({ editor, t, lang, dir, uploading, onInsertImage }: ToolbarProps) {
   return (
     <div
-      // top-0 within the sticky container; the admin page sets the offset via
-      // --editor-toolbar-offset so this is not coupled to the header height.
-      className="sticky z-[5] flex flex-wrap items-center gap-1 border-b border-outline-variant bg-background px-2 py-2"
+      // The admin page sets --editor-toolbar-offset to its header height, so the
+      // toolbar parks just below it instead of being coupled to a magic number.
+      // rounded-t-xl matches the wrapper's corners, which no longer clip.
+      className="sticky z-[5] flex flex-wrap items-center gap-1 rounded-t-xl border-b border-outline-variant bg-background px-2 py-2"
       style={{ top: 'var(--editor-toolbar-offset, 0px)' }}
       dir={dir}
     >

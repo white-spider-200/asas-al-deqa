@@ -120,7 +120,11 @@ export function RichTextEditor({
   return (
     <div
       className={cn(
-        'overflow-hidden rounded-xl border border-outline-variant bg-white',
+        // No overflow-hidden here. It would make this element the nearest scroll
+        // container, which silently kills position:sticky on the toolbar (the
+        // controls scroll out of view in a long article) and clips the popovers.
+        // The corners are rounded on the toolbar and footer instead.
+        'rounded-xl border border-outline-variant bg-white',
         className,
       )}
     >
