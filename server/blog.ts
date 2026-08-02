@@ -174,8 +174,23 @@ type PostBody = {
 function normalizePostInput(body: PostBody, existingSlug?: string) {
   const titleAr = (body.titleAr ?? '').trim();
   const titleEn = (body.titleEn ?? '').trim();
-  if (!titleAr || !titleEn) {
-    throw Object.assign(new Error('titleAr and titleEn are required'), { status: 400 });
+  const published = Boolean(body.published);
+
+  // Drafts stay permissive: writers work in one language first and translate
+  // later, so requiring both titles up front would block saving real work.
+  // Both are only enforced at publish, when the post becomes public in both.
+  // `code` lets the admin UI show a translated message instead of this string.
+  if (!titleAr && !titleEn) {
+    throw Object.assign(new Error('A title is required in at least one language'), {
+      status: 400,
+      code: 'TITLE_REQUIRED',
+    });
+  }
+  if (published && (!titleAr || !titleEn)) {
+    throw Object.assign(new Error('Both the Arabic and English titles are required to publish'), {
+      status: 400,
+      code: 'BOTH_TITLES_REQUIRED',
+    });
   }
 
   let slug = (body.slug ?? '').trim() || slugify(titleEn || titleAr);
@@ -195,7 +210,7 @@ function normalizePostInput(body: PostBody, existingSlug?: string) {
     coverImage: body.coverImage === undefined ? undefined : (body.coverImage || null),
     tagAr: body.tagAr === undefined ? undefined : (body.tagAr?.trim() || null),
     tagEn: body.tagEn === undefined ? undefined : (body.tagEn?.trim() || null),
-    published: Boolean(body.published),
+    published,
   };
 }
 
@@ -294,7 +309,10 @@ export function createAdminBlogRouter(): Router {
     } catch (err) {
       const status = (err as { status?: number }).status || 500;
       if (status === 400) {
-        return res.status(400).json({ error: (err as Error).message });
+        return res.status(400).json({
+          error: (err as Error).message,
+          code: (err as { code?: string }).code,
+        });
       }
       console.error('Failed to create post:', err);
       return res.status(500).json({ error: 'Failed to create post' });
@@ -338,7 +356,10 @@ export function createAdminBlogRouter(): Router {
     } catch (err) {
       const status = (err as { status?: number }).status || 500;
       if (status === 400) {
-        return res.status(400).json({ error: (err as Error).message });
+        return res.status(400).json({
+          error: (err as Error).message,
+          code: (err as { code?: string }).code,
+        });
       }
       console.error('Failed to update post:', err);
       return res.status(500).json({ error: 'Failed to update post' });

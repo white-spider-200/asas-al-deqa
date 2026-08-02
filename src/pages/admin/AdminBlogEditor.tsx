@@ -3,7 +3,7 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { Eye, Pencil } from 'lucide-react';
 import { PostPreview } from '../../components/blog/PostPreview';
 import { RichTextEditor } from '../../components/blog/RichTextEditor';
-import { blogApi, type BlogPostInput } from '../../lib/blog-api';
+import { ApiError, blogApi, type BlogPostInput } from '../../lib/blog-api';
 import { adminLabels, useAdminLang } from '../../lib/admin-i18n';
 
 const emptyForm: BlogPostInput = {
@@ -105,6 +105,14 @@ export function AdminBlogEditor() {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
+  /** Translate the server's validation codes; fall back to its raw message. */
+  const saveErrorMessage = (err: unknown): string => {
+    const code = err instanceof ApiError ? err.code : undefined;
+    if (code === 'TITLE_REQUIRED') return t.errTitleRequired;
+    if (code === 'BOTH_TITLES_REQUIRED') return t.errBothTitles;
+    return err instanceof Error ? err.message : t.saveFailed;
+  };
+
   const onCoverUpload = async () => {
     const input = document.createElement('input');
     input.type = 'file';
@@ -140,7 +148,7 @@ export function AdminBlogEditor() {
         setForm((prev) => ({ ...prev, published: payload.published }));
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : t.saveFailed);
+      setError(saveErrorMessage(err));
     } finally {
       setSaving(false);
     }

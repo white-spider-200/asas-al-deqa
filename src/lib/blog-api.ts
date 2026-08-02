@@ -32,14 +32,25 @@ export type BlogPostInput = {
   published?: boolean;
 };
 
+/** Error carrying the server's machine-readable `code`, so the UI can translate it. */
+export class ApiError extends Error {
+  code?: string;
+  constructor(message: string, code?: string) {
+    super(message);
+    this.name = 'ApiError';
+    this.code = code;
+  }
+}
+
 async function parseJson<T>(res: Response): Promise<T> {
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    const message =
-      typeof data === 'object' && data && 'error' in data
-        ? String((data as { error: string }).error)
-        : `Request failed (${res.status})`;
-    throw new Error(message);
+    const body = (typeof data === 'object' && data ? data : {}) as {
+      error?: string;
+      code?: string;
+    };
+    const message = body.error ? String(body.error) : `Request failed (${res.status})`;
+    throw new ApiError(message, body.code);
   }
   return data as T;
 }

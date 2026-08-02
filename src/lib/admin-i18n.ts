@@ -55,6 +55,9 @@ export const adminLabels = {
     loadFailed: 'Failed to load',
     saveFailed: 'Save failed',
     uploadFailed: 'Upload failed',
+    errTitleRequired: 'Add a title in Arabic or English before saving.',
+    errBothTitles:
+      'Publishing needs both the Arabic and English titles. Add the missing one, or use “Save draft” to keep your work for now.',
     switchUiLang: 'Switch interface to Arabic',
     // Post list
     posts: 'Posts',
@@ -127,6 +130,9 @@ export const adminLabels = {
     loadFailed: 'تعذّر التحميل',
     saveFailed: 'تعذّر الحفظ',
     uploadFailed: 'فشل رفع الصورة',
+    errTitleRequired: 'أضف عنواناً بالعربية أو الإنجليزية قبل الحفظ.',
+    errBothTitles:
+      'النشر يتطلب العنوان بالعربية والإنجليزية معاً. أضف العنوان الناقص، أو استخدم «حفظ كمسودة» للاحتفاظ بعملك الآن.',
     switchUiLang: 'تغيير لغة الواجهة إلى الإنجليزية',
     // Post list
     posts: 'المقالات',
