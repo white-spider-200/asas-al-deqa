@@ -78,4 +78,4 @@ Each post should: answer one question, mention Jordan/Amman naturally, link to t
 
 ## Brand strings (keep consistent)
 
-Prefer one primary English spelling on the site: **Asas Al-Deqa**. Avoid mixing Al-Diqqa / Al Diqqa / ADBS in customer-facing titles except where ADBS is the short mark.
+Prefer one primary English spelling on the site: **Asas Al-Deqa**. Avoid mixing Al-aldiqa / Al aldiqa / ADBS in customer-facing titles except where ADBS is the short mark.

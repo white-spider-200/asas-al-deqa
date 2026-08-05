@@ -1,5 +1,3 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
 import {
   ArrowUpRight,
   Clock,
@@ -12,6 +10,7 @@ import {
   Phone,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { useLocale } from '../../hooks/useLocale';
 
 export const Footer = () => {
@@ -48,7 +47,7 @@ export const Footer = () => {
     {
       label: isRtl ? 'موقع المكتب' : 'Visit our office',
       value: isRtl
-        ? 'مجمع بيت العمر، الطابق الأول، خلدا، عمّان'
+        ? 'عمان - خلدا - إشارات العساف'
         : 'Beit Al Omor Complex, 1st Floor, Khalda, Amman',
       href: 'https://maps.google.com/?q=Beit+Al+Omor+Complex+Khalda+Amman+Jordan',
       icon: MapPin,

@@ -1,6 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { serviceContentEn, serviceContentAr } from './i18n/serviceContent';
+import { serviceContentAr, serviceContentEn } from './i18n/serviceContent';
 
 const resources = {
   en: {
@@ -172,7 +172,7 @@ const resources = {
       contact: {
         hero_title: {
           main: 'Start Your Journey',
-          accent: 'with Asas Al-Diqqa'
+          accent: 'with Asas Al-aldiqa'
         },
         hero_subtitle: 'Share your needs, and our team will contact you to provide the most suitable solution for your business.',
         info_title: 'Engagement Portal',
@@ -419,7 +419,7 @@ const resources = {
         info_title: 'بوابة التواصل',
         info_desc: 'فريقنا التنفيذي متاح لجلسات الاستكشاف الأولية التي تركز على الدقة.',
         location: 'الموقع',
-        location_val: 'الأردن - عمان - خلدا - إشارات العساف - مجمع بيت العمر، الطابق الأول',
+        location_val: 'عمان - خلدا - إشارات العساف',
         phone: 'الهاتف المباشر',
         phone_val: '+962797006750',
         email: 'البريد الإلكتروني',
