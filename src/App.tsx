@@ -17,6 +17,8 @@ import { Institutional } from './pages/Institutional';
 import { Insights } from './pages/Insights';
 import { InsightPost } from './pages/InsightPost';
 import { AdminLogin } from './pages/admin/AdminLogin';
+import { AdminForgotPassword } from './pages/admin/AdminForgotPassword';
+import { AdminResetPassword } from './pages/admin/AdminResetPassword';
 import { AdminBlogList } from './pages/admin/AdminBlogList';
 import { AdminBlogEditor } from './pages/admin/AdminBlogEditor';
 import { Analytics } from './components/common/Analytics';
@@ -38,6 +40,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/ar" replace />} />
           <Route path="/admin" element={<AdminLogin />} />
+          <Route path="/admin/forgot-password" element={<AdminForgotPassword />} />
+          <Route path="/admin/reset-password" element={<AdminResetPassword />} />
           <Route path="/admin/blog" element={<AdminBlogList />} />
           <Route path="/admin/blog/new" element={<AdminBlogEditor />} />
           <Route path="/admin/blog/:id" element={<AdminBlogEditor />} />

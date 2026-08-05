@@ -1,3 +1,4 @@
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
@@ -18,8 +19,21 @@ function resolveSqliteUrl(raw?: string): string {
   return `file:${path.resolve(projectRoot, filePath)}`;
 }
 
-const adapter = new PrismaBetterSqlite3({
-  url: resolveSqliteUrl(process.env.DATABASE_URL),
-});
+const databaseUrl = resolveSqliteUrl(process.env.DATABASE_URL);
+
+// In production the DB lives outside the repo (e.g. /var/lib/adfta/blog.db) so
+// deploys can't overwrite it. Make sure that directory exists before connecting.
+if (databaseUrl.startsWith('file:')) {
+  const dir = path.dirname(databaseUrl.slice('file:'.length));
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+}
+
+// Log the resolved path at startup. A silent fallback to the wrong file empties
+// the blog without any error, so this must always be visible in the pm2 logs.
+console.log(`[db] using ${databaseUrl}`);
+
+const adapter = new PrismaBetterSqlite3({ url: databaseUrl });
 
 export const prisma = new PrismaClient({ adapter });

@@ -171,8 +171,7 @@ export const InsightPost = () => {
                 />
               )}
               <div
-                className="prose prose-slate max-w-none text-on-surface leading-relaxed
-                  prose-headings:font-black prose-a:text-primary prose-img:rounded-lg"
+                className="article-content"
                 dir={isArabic ? 'rtl' : 'ltr'}
                 dangerouslySetInnerHTML={{ __html: content }}
               />

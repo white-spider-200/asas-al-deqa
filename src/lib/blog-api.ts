@@ -32,14 +32,25 @@ export type BlogPostInput = {
   published?: boolean;
 };
 
+/** Error carrying the server's machine-readable `code`, so the UI can translate it. */
+export class ApiError extends Error {
+  code?: string;
+  constructor(message: string, code?: string) {
+    super(message);
+    this.name = 'ApiError';
+    this.code = code;
+  }
+}
+
 async function parseJson<T>(res: Response): Promise<T> {
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    const message =
-      typeof data === 'object' && data && 'error' in data
-        ? String((data as { error: string }).error)
-        : `Request failed (${res.status})`;
-    throw new Error(message);
+    const body = (typeof data === 'object' && data ? data : {}) as {
+      error?: string;
+      code?: string;
+    };
+    const message = body.error ? String(body.error) : `Request failed (${res.status})`;
+    throw new ApiError(message, body.code);
   }
   return data as T;
 }
@@ -73,6 +84,21 @@ export const blogApi = {
     return fetch('/api/auth/logout', {
       method: 'POST',
       credentials: 'include',
+    }).then((res) => parseJson(res));
+  },
+
+  forgotPassword(): Promise<{ ok: boolean; message: string }> {
+    return fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    }).then((res) => parseJson(res));
+  },
+
+  resetPassword(token: string, password: string): Promise<{ ok: boolean }> {
+    return fetch('/api/auth/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, password }),
     }).then((res) => parseJson(res));
   },
 

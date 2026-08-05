@@ -1,28 +1,26 @@
 import type { Request, Response } from 'express';
 import { prisma } from './db.js';
+import { availableLangsFor, postUrl } from './postMeta.js';
+import { LANGS, SERVICE_SLUGS, STATIC_PAGE_PATHS } from './routes.js';
 
 const SITE_URL = (process.env.VITE_SITE_URL || 'https://adfta.com').replace(/\/$/, '');
 
-const LANGS = ['ar', 'en'] as const;
-const STATIC_PAGES: { path: string; changefreq: string; priority: string }[] = [
-  { path: '', changefreq: 'weekly', priority: '1.0' },
-  { path: '/about', changefreq: 'monthly', priority: '0.8' },
-  { path: '/services', changefreq: 'monthly', priority: '0.9' },
-  { path: '/contact', changefreq: 'monthly', priority: '0.8' },
-  { path: '/wealth', changefreq: 'monthly', priority: '0.7' },
-  { path: '/institutional', changefreq: 'monthly', priority: '0.7' },
-  { path: '/insights', changefreq: 'weekly', priority: '0.85' },
-];
+// Paths come from server/routes.ts, which the 404 handler also uses, so a page
+// cannot be listed in the sitemap while the server treats it as unknown.
+const PAGE_META: Record<string, { changefreq: string; priority: string }> = {
+  '': { changefreq: 'weekly', priority: '1.0' },
+  '/about': { changefreq: 'monthly', priority: '0.8' },
+  '/services': { changefreq: 'monthly', priority: '0.9' },
+  '/contact': { changefreq: 'monthly', priority: '0.8' },
+  '/wealth': { changefreq: 'monthly', priority: '0.7' },
+  '/institutional': { changefreq: 'monthly', priority: '0.7' },
+  '/insights': { changefreq: 'weekly', priority: '0.85' },
+};
 
-const SERVICE_SLUGS = [
-  'tax-compliance',
-  'accounting',
-  'tax-management',
-  'tax-litigation',
-  'documentation',
-  'inventory',
-  'erp',
-];
+const STATIC_PAGES = STATIC_PAGE_PATHS.map((path) => ({
+  path,
+  ...(PAGE_META[path] ?? { changefreq: 'monthly', priority: '0.7' }),
+}));
 
 function escapeXml(value: string): string {
   return value
@@ -75,7 +73,13 @@ export async function handleSitemap(_req: Request, res: Response) {
   try {
     const posts = await prisma.blogPost.findMany({
       where: { published: true },
-      select: { slug: true, publishedAt: true, updatedAt: true },
+      select: {
+        slug: true,
+        publishedAt: true,
+        updatedAt: true,
+        contentAr: true,
+        contentEn: true,
+      },
       orderBy: { publishedAt: 'desc' },
     });
 
@@ -107,15 +111,28 @@ export async function handleSitemap(_req: Request, res: Response) {
       }
 
       for (const post of posts) {
-        const pathAfterLang = `/insights/${post.slug}`;
+        // A post only has a page in a language once that language has a body.
+        // Listing an empty translation sends Google to a blank article.
+        const langs = availableLangsFor(post);
+        if (!langs.includes(lang)) continue;
+
         const lastmod = toIsoDate(post.updatedAt) || toIsoDate(post.publishedAt);
+        const alternates: { lang: string; href: string }[] = langs.map((l) => ({
+          lang: l,
+          href: postUrl(l, post.slug),
+        }));
+        alternates.push({
+          lang: 'x-default',
+          href: postUrl(langs.includes('ar') ? 'ar' : langs[0], post.slug),
+        });
+
         urls.push(
           urlEntry({
-            loc: `${SITE_URL}/${lang}${pathAfterLang}`,
+            loc: postUrl(lang, post.slug),
             lastmod,
             changefreq: 'weekly',
             priority: '0.7',
-            alternates: bilingualAlternates(pathAfterLang),
+            alternates,
           }),
         );
       }

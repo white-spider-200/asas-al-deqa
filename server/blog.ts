@@ -8,7 +8,12 @@ import { prisma } from './db.js';
 import { requireAuth } from './auth.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-export const uploadsDir = path.resolve(__dirname, '../uploads');
+
+// Uploaded images are live content. In production point UPLOADS_DIR at a path
+// outside the repo (e.g. /var/lib/adfta/uploads) so redeploys don't wipe them.
+export const uploadsDir = process.env.UPLOADS_DIR?.trim()
+  ? path.resolve(process.env.UPLOADS_DIR.trim())
+  : path.resolve(__dirname, '../uploads');
 
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
@@ -40,8 +45,50 @@ const upload = multer({
 const ALLOWED_TAGS = new Set([
   'p', 'br', 'strong', 'b', 'em', 'i', 'u', 's', 'blockquote',
   'ul', 'ol', 'li', 'h2', 'h3', 'h4', 'a', 'img', 'span',
-  'code', 'pre', 'hr',
+  'code', 'pre', 'hr', 'mark',
 ]);
+
+/**
+ * Values we are willing to echo back into a style attribute.
+ * Deliberately narrow: no url(), no var(), no expression(), no arbitrary CSS.
+ */
+const SAFE_COLOUR = /^(#[0-9a-f]{3,8}|rgba?\([\d\s.,%/]+\)|inherit|transparent|currentcolor)$/i;
+const SAFE_ALIGN = /^(left|right|center|justify)$/i;
+
+/** Property allowlists, one per tag family the editor can produce. */
+const COLOUR_ONLY: Record<string, RegExp> = { color: SAFE_COLOUR };
+const HIGHLIGHT_STYLE: Record<string, RegExp> = {
+  'background-color': SAFE_COLOUR,
+  color: SAFE_COLOUR,
+};
+const ALIGN_ONLY: Record<string, RegExp> = { 'text-align': SAFE_ALIGN };
+
+/** Block tags the alignment control may write a style onto. */
+const ALIGNABLE_TAGS = new Set(['p', 'h2', 'h3', 'h4']);
+
+/**
+ * Rebuilds a style attribute containing only the declarations we recognise,
+ * each validated against its own pattern. The editor's colour picker,
+ * highlighter and alignment buttons are the only things that set these
+ * (see src/components/blog/editor/), so everything else is dropped.
+ */
+function safeStyle(attrs: string, allowed: Record<string, RegExp>): string {
+  const styleMatch = attrs.match(/\sstyle\s*=\s*(['"])(.*?)\1/i);
+  if (!styleMatch) return '';
+
+  const kept: string[] = [];
+  for (const declaration of styleMatch[2].split(';')) {
+    const [rawProp, ...rest] = declaration.split(':');
+    const prop = rawProp?.trim().toLowerCase();
+    const value = rest.join(':').trim();
+    if (!prop || !value) continue;
+    const pattern = allowed[prop];
+    if (!pattern || !pattern.test(value)) continue;
+    kept.push(`${prop}: ${value}`);
+  }
+
+  return kept.length ? ` style="${kept.join('; ').replace(/"/g, '&quot;')}"` : '';
+}
 
 /** Strip scripts/styles and non-whitelisted tags; keep safe attrs on a/img. */
 export function sanitizeHtml(html: string): string {
@@ -78,17 +125,46 @@ export function sanitizeHtml(html: string): string {
       return `<img src="${src.replace(/"/g, '&quot;')}" alt="${alt}"${cls}>`;
     }
 
+    // Text colour from the editor's palette.
+    if (tag === 'span') {
+      return `<span${safeStyle(attrs, COLOUR_ONLY)}>`;
+    }
+
+    // Highlight. TipTap emits data-color alongside the inline style.
+    if (tag === 'mark') {
+      return `<mark${safeStyle(attrs, HIGHLIGHT_STYLE)}>`;
+    }
+
+    // Alignment is the only style the editor writes onto a block element.
+    if (ALIGNABLE_TAGS.has(tag)) {
+      return `<${tag}${safeStyle(attrs, ALIGN_ONLY)}>`;
+    }
+
     return `<${tag}>`;
   });
 
   return out;
 }
 
+/** Arabic diacritics (tashkeel) and tatweel — invisible, but they break slug matching. */
+const ARABIC_MARKS = /[ً-ٰٟـ]/g;
+
+/**
+ * Builds a URL slug, keeping Unicode letters so an Arabic title produces a
+ * readable Arabic slug instead of a meaningless `post-<timestamp>`.
+ *
+ * Arabic slugs are valid URLs and good for Arabic search; they are
+ * percent-encoded wherever they are emitted (see postUrl in postMeta.ts, which
+ * canonical, hreflang and the sitemap all route through).
+ */
 function slugify(input: string): string {
   return input
+    .normalize('NFKC')
     .toLowerCase()
     .trim()
-    .replace(/[^\w\s-]/g, '')
+    .replace(ARABIC_MARKS, '')
+    // Keep letters and numbers in any script; drop punctuation and symbols.
+    .replace(/[^\p{L}\p{N}\s-]/gu, '')
     .replace(/[\s_]+/g, '-')
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '')
@@ -112,8 +188,23 @@ type PostBody = {
 function normalizePostInput(body: PostBody, existingSlug?: string) {
   const titleAr = (body.titleAr ?? '').trim();
   const titleEn = (body.titleEn ?? '').trim();
-  if (!titleAr || !titleEn) {
-    throw Object.assign(new Error('titleAr and titleEn are required'), { status: 400 });
+  const published = Boolean(body.published);
+
+  // Drafts stay permissive: writers work in one language first and translate
+  // later, so requiring both titles up front would block saving real work.
+  // Both are only enforced at publish, when the post becomes public in both.
+  // `code` lets the admin UI show a translated message instead of this string.
+  if (!titleAr && !titleEn) {
+    throw Object.assign(new Error('A title is required in at least one language'), {
+      status: 400,
+      code: 'TITLE_REQUIRED',
+    });
+  }
+  if (published && (!titleAr || !titleEn)) {
+    throw Object.assign(new Error('Both the Arabic and English titles are required to publish'), {
+      status: 400,
+      code: 'BOTH_TITLES_REQUIRED',
+    });
   }
 
   let slug = (body.slug ?? '').trim() || slugify(titleEn || titleAr);
@@ -133,7 +224,7 @@ function normalizePostInput(body: PostBody, existingSlug?: string) {
     coverImage: body.coverImage === undefined ? undefined : (body.coverImage || null),
     tagAr: body.tagAr === undefined ? undefined : (body.tagAr?.trim() || null),
     tagEn: body.tagEn === undefined ? undefined : (body.tagEn?.trim() || null),
-    published: Boolean(body.published),
+    published,
   };
 }
 
@@ -232,7 +323,10 @@ export function createAdminBlogRouter(): Router {
     } catch (err) {
       const status = (err as { status?: number }).status || 500;
       if (status === 400) {
-        return res.status(400).json({ error: (err as Error).message });
+        return res.status(400).json({
+          error: (err as Error).message,
+          code: (err as { code?: string }).code,
+        });
       }
       console.error('Failed to create post:', err);
       return res.status(500).json({ error: 'Failed to create post' });
@@ -276,7 +370,10 @@ export function createAdminBlogRouter(): Router {
     } catch (err) {
       const status = (err as { status?: number }).status || 500;
       if (status === 400) {
-        return res.status(400).json({ error: (err as Error).message });
+        return res.status(400).json({
+          error: (err as Error).message,
+          code: (err as { code?: string }).code,
+        });
       }
       console.error('Failed to update post:', err);
       return res.status(500).json({ error: 'Failed to update post' });

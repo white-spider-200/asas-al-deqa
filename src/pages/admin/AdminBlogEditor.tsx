@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Eye, Pencil } from 'lucide-react';
+import { PostPreview } from '../../components/blog/PostPreview';
 import { RichTextEditor } from '../../components/blog/RichTextEditor';
-import { blogApi, type BlogPostInput } from '../../lib/blog-api';
+import { ApiError, blogApi, type BlogPostInput } from '../../lib/blog-api';
+import { adminLabels, useAdminLang } from '../../lib/admin-i18n';
 
 const emptyForm: BlogPostInput = {
   slug: '',
@@ -21,6 +24,8 @@ export function AdminBlogEditor() {
   const { id } = useParams<{ id: string }>();
   const isNew = !id || id === 'new';
   const navigate = useNavigate();
+  const { uiLang, setUiLang } = useAdminLang();
+  const t = adminLabels[uiLang];
   const [checking, setChecking] = useState(true);
   const [authed, setAuthed] = useState(false);
   const [form, setForm] = useState<BlogPostInput>(emptyForm);
@@ -28,6 +33,30 @@ export function AdminBlogEditor() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [langTab, setLangTab] = useState<'ar' | 'en'>('en');
+  const [mode, setMode] = useState<'edit' | 'preview'>('edit');
+  const [headerHeight, setHeaderHeight] = useState(73);
+  const headerObserver = useRef<ResizeObserver | null>(null);
+
+  // The header wraps to two rows on narrow screens, so its height is not a
+  // constant. Measure it and hand it to the editor toolbar's sticky offset.
+  //
+  // A callback ref, not useRef + useEffect: `authed` becomes true while
+  // `checking` is still true, so the header is not mounted yet on that render,
+  // and by the time it mounts no dependency has changed for an effect to re-run.
+  // A callback ref fires exactly when the node attaches.
+  const headerRef = useCallback((el: HTMLElement | null) => {
+    headerObserver.current?.disconnect();
+    if (!el) return;
+    // getBoundingClientRect, not contentRect — the header has a bottom border
+    // and the toolbar must sit below it, not overlapping.
+    const measure = () => setHeaderHeight(Math.round(el.getBoundingClientRect().height));
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    headerObserver.current = observer;
+  }, []);
+
+  useEffect(() => () => headerObserver.current?.disconnect(), []);
 
   useEffect(() => {
     blogApi
@@ -52,18 +81,18 @@ export function AdminBlogEditor() {
       })
       .catch((err) => {
         setAuthed(false);
-        setError(err instanceof Error ? err.message : 'Failed to load');
+        setError(err instanceof Error ? err.message : t.loadFailed);
       })
       .finally(() => {
         setChecking(false);
         setLoading(false);
       });
-  }, [id, isNew]);
+  }, [id, isNew, t.loadFailed]);
 
   if (checking || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background text-muted">
-        Loading…
+        {t.loading}
       </div>
     );
   }
@@ -74,6 +103,14 @@ export function AdminBlogEditor() {
 
   const setField = <K extends keyof BlogPostInput>(key: K, value: BlogPostInput[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
+  };
+
+  /** Translate the server's validation codes; fall back to its raw message. */
+  const saveErrorMessage = (err: unknown): string => {
+    const code = err instanceof ApiError ? err.code : undefined;
+    if (code === 'TITLE_REQUIRED') return t.errTitleRequired;
+    if (code === 'BOTH_TITLES_REQUIRED') return t.errBothTitles;
+    return err instanceof Error ? err.message : t.saveFailed;
   };
 
   const onCoverUpload = async () => {
@@ -87,7 +124,7 @@ export function AdminBlogEditor() {
         const { url } = await blogApi.upload(file);
         setField('coverImage', url);
       } catch (err) {
-        window.alert(err instanceof Error ? err.message : 'Upload failed');
+        window.alert(err instanceof Error ? err.message : t.uploadFailed);
       }
     };
     input.click();
@@ -111,30 +148,46 @@ export function AdminBlogEditor() {
         setForm((prev) => ({ ...prev, published: payload.published }));
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Save failed');
+      setError(saveErrorMessage(err));
     } finally {
       setSaving(false);
     }
   };
 
+  const uiDir = uiLang === 'ar' ? 'rtl' : 'ltr';
+
   return (
-    <div className="min-h-screen bg-background text-on-surface pb-20">
-      <header className="border-b border-outline-variant bg-white sticky top-0 z-10">
+    <div
+      className="min-h-screen bg-background text-on-surface pb-20"
+      dir={uiDir}
+      // Measured from the header below, so the editor toolbar parks flush
+      // against it and no text slides through the gap.
+      style={{ ['--editor-toolbar-offset' as string]: `${headerHeight}px` }}
+    >
+      <header ref={headerRef} className="border-b border-outline-variant bg-white sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-3">
           <div>
             <Link to="/admin/blog" className="text-sm text-primary font-bold hover:underline">
-              ← All posts
+              {uiLang === 'ar' ? '→' : '←'} {t.allPosts}
             </Link>
-            <h1 className="text-xl font-black mt-1">{isNew ? 'New post' : 'Edit post'}</h1>
+            <h1 className="text-xl font-black mt-1">{isNew ? t.newPost : t.editPost}</h1>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setUiLang(uiLang === 'ar' ? 'en' : 'ar')}
+              title={t.switchUiLang}
+              className="rounded-lg border border-outline-variant px-3 py-2 text-sm font-bold hover:bg-surface-container"
+            >
+              {uiLang === 'ar' ? 'EN' : 'ع'}
+            </button>
             <button
               type="button"
               disabled={saving}
               onClick={() => onSave(false)}
               className="rounded-lg border border-outline-variant px-4 py-2 text-sm font-bold hover:bg-surface-container disabled:opacity-60"
             >
-              Save draft
+              {t.saveDraft}
             </button>
             <button
               type="button"
@@ -142,7 +195,7 @@ export function AdminBlogEditor() {
               onClick={() => onSave(true)}
               className="rounded-lg bg-primary text-white px-4 py-2 text-sm font-bold hover:opacity-90 disabled:opacity-60"
             >
-              {form.published ? 'Update & publish' : 'Publish'}
+              {form.published ? t.updatePublish : t.publish}
             </button>
           </div>
         </div>
@@ -157,23 +210,24 @@ export function AdminBlogEditor() {
 
         <div className="grid sm:grid-cols-2 gap-4">
           <label className="block">
-            <span className="text-sm font-bold mb-1.5 block">Slug</span>
+            <span className="text-sm font-bold mb-1.5 block">{t.slug}</span>
             <input
               value={form.slug || ''}
               onChange={(e) => setField('slug', e.target.value)}
-              placeholder="auto-from-english-title"
+              placeholder={t.slugPlaceholder}
+              dir="ltr"
               className="w-full rounded-lg border border-outline-variant px-3 py-2"
             />
           </label>
           <div className="block">
-            <span className="text-sm font-bold mb-1.5 block">Cover image</span>
+            <span className="text-sm font-bold mb-1.5 block">{t.coverImage}</span>
             <div className="flex items-center gap-3">
               <button
                 type="button"
                 onClick={onCoverUpload}
                 className="rounded-lg border border-outline-variant px-3 py-2 text-sm font-medium hover:bg-surface-container"
               >
-                Upload
+                {t.upload}
               </button>
               {form.coverImage && (
                 <img src={form.coverImage} alt="" className="h-10 w-16 object-cover rounded" />
@@ -184,34 +238,64 @@ export function AdminBlogEditor() {
                   className="text-sm text-muted hover:text-red-600"
                   onClick={() => setField('coverImage', null)}
                 >
-                  Remove
+                  {t.remove}
                 </button>
               )}
             </div>
           </div>
         </div>
 
-        <div className="flex gap-2 border-b border-outline-variant">
-          {(['en', 'ar'] as const).map((tab) => (
-            <button
-              key={tab}
-              type="button"
-              onClick={() => setLangTab(tab)}
-              className={`px-4 py-2 text-sm font-bold border-b-2 -mb-px ${
-                langTab === tab
-                  ? 'border-primary text-primary'
-                  : 'border-transparent text-muted hover:text-on-surface'
-              }`}
-            >
-              {tab === 'en' ? 'English' : 'العربية'}
-            </button>
-          ))}
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-outline-variant">
+          <div className="flex gap-2">
+            {(['en', 'ar'] as const).map((tab) => (
+              <button
+                key={tab}
+                type="button"
+                onClick={() => setLangTab(tab)}
+                className={`px-4 py-2 text-sm font-bold border-b-2 -mb-px ${
+                  langTab === tab
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-muted hover:text-on-surface'
+                }`}
+              >
+                {tab === 'en' ? 'English' : 'العربية'}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex gap-1 mb-1.5 rounded-lg bg-surface-container p-1">
+            {([
+              ['edit', t.edit, Pencil],
+              ['preview', t.preview, Eye],
+            ] as const).map(([value, label, Icon]) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setMode(value)}
+                className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-bold transition-colors ${
+                  mode === value ? 'bg-white text-primary shadow-sm' : 'text-muted hover:text-on-surface'
+                }`}
+              >
+                <Icon size={14} />
+                {label}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {langTab === 'en' ? (
-          <div className="space-y-4">
+        {mode === 'preview' ? (
+          <PostPreview
+            lang={langTab}
+            title={langTab === 'ar' ? form.titleAr : form.titleEn}
+            excerpt={(langTab === 'ar' ? form.excerptAr : form.excerptEn) || ''}
+            content={(langTab === 'ar' ? form.contentAr : form.contentEn) || ''}
+            coverImage={form.coverImage}
+            tag={langTab === 'ar' ? form.tagAr : form.tagEn}
+          />
+        ) : langTab === 'en' ? (
+          <div className="space-y-4" dir="ltr">
             <label className="block">
-              <span className="text-sm font-bold mb-1.5 block">Title (EN)</span>
+              <span className="text-sm font-bold mb-1.5 block">{t.titleField} (EN)</span>
               <input
                 value={form.titleEn}
                 onChange={(e) => setField('titleEn', e.target.value)}
@@ -220,7 +304,7 @@ export function AdminBlogEditor() {
               />
             </label>
             <label className="block">
-              <span className="text-sm font-bold mb-1.5 block">Tag (EN)</span>
+              <span className="text-sm font-bold mb-1.5 block">{t.tagField} (EN)</span>
               <input
                 value={form.tagEn || ''}
                 onChange={(e) => setField('tagEn', e.target.value)}
@@ -229,7 +313,7 @@ export function AdminBlogEditor() {
               />
             </label>
             <label className="block">
-              <span className="text-sm font-bold mb-1.5 block">Excerpt (EN)</span>
+              <span className="text-sm font-bold mb-1.5 block">{t.excerptField} (EN)</span>
               <textarea
                 value={form.excerptEn || ''}
                 onChange={(e) => setField('excerptEn', e.target.value)}
@@ -238,11 +322,12 @@ export function AdminBlogEditor() {
               />
             </label>
             <div>
-              <span className="text-sm font-bold mb-1.5 block">Content (EN)</span>
+              <span className="text-sm font-bold mb-1.5 block">{t.contentField} (EN)</span>
               <RichTextEditor
                 value={form.contentEn || ''}
                 onChange={(html) => setField('contentEn', html)}
                 dir="ltr"
+                lang={uiLang}
                 placeholder="Write the English article…"
               />
             </div>
@@ -250,7 +335,7 @@ export function AdminBlogEditor() {
         ) : (
           <div className="space-y-4" dir="rtl">
             <label className="block">
-              <span className="text-sm font-bold mb-1.5 block">العنوان (AR)</span>
+              <span className="text-sm font-bold mb-1.5 block">{t.titleField} (AR)</span>
               <input
                 value={form.titleAr}
                 onChange={(e) => setField('titleAr', e.target.value)}
@@ -259,7 +344,7 @@ export function AdminBlogEditor() {
               />
             </label>
             <label className="block">
-              <span className="text-sm font-bold mb-1.5 block">الوسم (AR)</span>
+              <span className="text-sm font-bold mb-1.5 block">{t.tagField} (AR)</span>
               <input
                 value={form.tagAr || ''}
                 onChange={(e) => setField('tagAr', e.target.value)}
@@ -268,7 +353,7 @@ export function AdminBlogEditor() {
               />
             </label>
             <label className="block">
-              <span className="text-sm font-bold mb-1.5 block">المقتطف (AR)</span>
+              <span className="text-sm font-bold mb-1.5 block">{t.excerptField} (AR)</span>
               <textarea
                 value={form.excerptAr || ''}
                 onChange={(e) => setField('excerptAr', e.target.value)}
@@ -277,11 +362,12 @@ export function AdminBlogEditor() {
               />
             </label>
             <div>
-              <span className="text-sm font-bold mb-1.5 block">المحتوى (AR)</span>
+              <span className="text-sm font-bold mb-1.5 block">{t.contentField} (AR)</span>
               <RichTextEditor
                 value={form.contentAr || ''}
                 onChange={(html) => setField('contentAr', html)}
                 dir="rtl"
+                lang={uiLang}
                 placeholder="اكتب المقالة بالعربية…"
               />
             </div>
